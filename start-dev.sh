@@ -1,0 +1,20 @@
+#!/bin/bash
+# Script de connexion et lancement Wix Dev
+
+echo "🔐 Connexion à Wix..."
+echo "----------------------------------------"
+echo "1. Exécutez: wix login"
+echo "2. Un code sera affiché (ex: APTFF7K7)"
+echo "3. Copiez ce code"
+echo "4. Allez sur: https://users.wix.com/login/device-login"
+echo "5. Collez le code"
+echo "----------------------------------------"
+echo ""
+echo "Une fois connecté, lancez: wix dev"
+echo ""
+echo "Commandes disponibles:"
+echo "  wix login    - Se connecter à Wix"
+echo "  wix dev      - Lancer l'éditeur local"
+echo "  wix pull     - Récupérer depuis Wix"
+echo "  wix push     - Envoyer vers Wix"
+echo "  wix publish  - Publier en production"
