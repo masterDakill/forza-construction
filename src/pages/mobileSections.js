@@ -4,7 +4,53 @@
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import wixData from 'wix-data';
-import { premiumMarketingCopy, conversionContent } from '../content/premiumMarketingCopy';
+
+// Fallback content for mobile sections
+const fallbackMobileContent = {
+    mobileSections: {
+        beforeAfter: {
+            title: "🏗️ Transformations Réalisées",
+            subtitle: "Découvrez nos plus beaux projets",
+            cta: "Voir Nos Projets"
+        },
+        pricing: {
+            title: "💰 Prix Transparents",
+            subtitle: "Tarifs clairs, aucune surprise",
+            items: [
+                {
+                    service: "Cuisine",
+                    price: "À partir de 15,000$",
+                    includes: "Armoires • Comptoir • Électros"
+                },
+                {
+                    service: "Salle de Bain",
+                    price: "À partir de 8,000$", 
+                    includes: "Douche • Vanité • Céramique"
+                }
+            ]
+        }
+    }
+};
+
+// Initialize with fallback content
+let premiumMarketingCopy = { mobileOptimizedContent: fallbackMobileContent };
+let conversionContent = { socialProof: ["✅ Plus de 2,000 clients satisfaits"] };
+
+// Try to load premium content dynamically
+try {
+    import('../content/premiumMarketingCopy.js').then(module => {
+        if (module.premiumMarketingCopy) {
+            premiumMarketingCopy = module.premiumMarketingCopy;
+        }
+        if (module.conversionContent) {
+            conversionContent = module.conversionContent;
+        }
+    }).catch(() => {
+        console.log('Using fallback mobile content');
+    });
+} catch (error) {
+    console.log('Import failed, using fallback content');
+}
 
 // === SECTIONS MOBILES INTERACTIVES ===
 class MobileSectionsManager {

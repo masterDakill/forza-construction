@@ -6,7 +6,63 @@ import wixWindow from 'wix-window';
 import wixData from 'wix-data';
 import { initMobileOptimizations } from './mobileOptimizations';
 import { initMobileSections } from './mobileSections';
-import { premiumMarketingCopy, conversionContent } from '../content/premiumMarketingCopy';
+
+// Fallback content in case import fails
+const fallbackMarketingCopy = {
+    hero: {
+        headline: "Transformez Votre Maison avec Forza Construction",
+        subheadline: "Experts en rénovation depuis 15 ans • Plus de 2,000 projets réalisés",
+        primaryCTA: "DEVIS GRATUIT",
+        secondaryCTA: "Voir Nos Réalisations",
+        trustIndicators: [
+            "🏆 #1 Entrepreneur Québec",
+            "⭐ 4.9/5 - Plus de 500 avis", 
+            "🛡️ Garantie 10 ans incluse"
+        ]
+    },
+    testimonials: {
+        reviews: [
+            {
+                name: "Marie-Claire Dubois",
+                title: "Propriétaire, Sainte-Foy",
+                project: "Rénovation cuisine",
+                content: "Travail exceptionnel! Délais respectés, résultat parfait.",
+                rating: 5
+            }
+        ]
+    }
+};
+
+const fallbackConversionContent = {
+    urgencyMessages: [
+        "⚡ Promotion spéciale: Consultation gratuite",
+        "🔥 Places limitées cette semaine"
+    ],
+    socialProof: [
+        "✅ Plus de 2,000 familles satisfaites",
+        "🏆 Meilleur entrepreneur résidentiel"
+    ]
+};
+
+// Try to import premium content, fallback if fails
+let premiumMarketingCopy = fallbackMarketingCopy;
+let conversionContent = fallbackConversionContent;
+
+try {
+    // Dynamic import to handle potential failures
+    import('../content/premiumMarketingCopy.js').then(module => {
+        if (module.premiumMarketingCopy) {
+            premiumMarketingCopy = module.premiumMarketingCopy;
+        }
+        if (module.conversionContent) {
+            conversionContent = module.conversionContent;
+        }
+    }).catch(error => {
+        console.log('Using fallback content:', error.message);
+    });
+} catch (error) {
+    console.log('Import failed, using fallback content');
+}
 
 $w.onReady(function () {
     // === INITIALISATION PREMIUM ===
@@ -102,8 +158,8 @@ $w.onReady(function () {
     }
     
     function updateContentWithPremiumCopy() {
-        // Mettre à jour le contenu avec le copy premium
-        const copy = premiumMarketingCopy;
+        // Mettre à jour le contenu avec le copy premium (avec fallback)
+        const copy = premiumMarketingCopy || fallbackMarketingCopy;
         
         // Hero section
         if ($w('#textHeroTitle')) {
@@ -350,7 +406,7 @@ $w.onReady(function () {
     
     function startTestimonialRotation() {
         let currentIndex = 0;
-        const testimonials = premiumMarketingCopy.testimonials.reviews;
+        const testimonials = (premiumMarketingCopy?.testimonials?.reviews) || fallbackMarketingCopy.testimonials.reviews;
         
         setInterval(() => {
             currentIndex = (currentIndex + 1) % testimonials.length;
@@ -652,17 +708,17 @@ $w.onReady(function () {
             }
         });
         
-        // Message d'urgence mobile avec copy premium
+        // Message d'urgence mobile avec copy premium (avec fallback)
         if ($w('#textMobileUrgency')) {
-            const urgencyMessages = conversionContent.urgencyMessages;
+            const urgencyMessages = (conversionContent?.urgencyMessages) || fallbackConversionContent.urgencyMessages;
             const randomMessage = urgencyMessages[Math.floor(Math.random() * urgencyMessages.length)];
             $w('#textMobileUrgency').text = randomMessage;
             $w('#textMobileUrgency').show('fade');
         }
         
-        // Social proof mobile
+        // Social proof mobile (avec fallback)
         if ($w('#textMobileSocialProof')) {
-            const socialProofMessages = conversionContent.socialProof;
+            const socialProofMessages = (conversionContent?.socialProof) || fallbackConversionContent.socialProof;
             const randomProof = socialProofMessages[Math.floor(Math.random() * socialProofMessages.length)];
             $w('#textMobileSocialProof').text = randomProof;
             $w('#textMobileSocialProof').show('fade');
