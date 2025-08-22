@@ -5,6 +5,7 @@ import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import wixData from 'wix-data';
 import { initMobileOptimizations } from './mobileOptimizations';
+import { initMobileSections } from './mobileSections';
 
 $w.onReady(function () {
     // === INITIALISATION ===
@@ -15,6 +16,9 @@ $w.onReady(function () {
     // === OPTIMISATIONS MOBILE ===
     initMobileOptimizations();
     setupMobileSpecificFeatures();
+    
+    // === SECTIONS MOBILES INTERACTIVES ===
+    initMobileSections();
     
     // === CONFIGURATION CONVERSION TRACKING ===
     function setupConversionTracking() {
