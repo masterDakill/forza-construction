@@ -36,21 +36,8 @@ const fallbackMobileContent = {
 let premiumMarketingCopy = { mobileOptimizedContent: fallbackMobileContent };
 let conversionContent = { socialProof: ["✅ Plus de 2,000 clients satisfaits"] };
 
-// Try to load premium content dynamically
-try {
-    import('../content/premiumMarketingCopy.js').then(module => {
-        if (module.premiumMarketingCopy) {
-            premiumMarketingCopy = module.premiumMarketingCopy;
-        }
-        if (module.conversionContent) {
-            conversionContent = module.conversionContent;
-        }
-    }).catch(() => {
-        console.log('Using fallback mobile content');
-    });
-} catch (error) {
-    console.log('Import failed, using fallback content');
-}
+// Use fallback content directly (no import needed for Wix deployment)
+console.log('Using fallback mobile content for Wix deployment');
 
 // === SECTIONS MOBILES INTERACTIVES ===
 class MobileSectionsManager {

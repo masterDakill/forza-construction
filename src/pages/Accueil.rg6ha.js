@@ -44,25 +44,9 @@ const fallbackConversionContent = {
     ]
 };
 
-// Try to import premium content, fallback if fails
+// Use fallback content directly (no import needed for Wix deployment)
 let premiumMarketingCopy = fallbackMarketingCopy;
 let conversionContent = fallbackConversionContent;
-
-try {
-    // Dynamic import to handle potential failures
-    import('../content/premiumMarketingCopy.js').then(module => {
-        if (module.premiumMarketingCopy) {
-            premiumMarketingCopy = module.premiumMarketingCopy;
-        }
-        if (module.conversionContent) {
-            conversionContent = module.conversionContent;
-        }
-    }).catch(error => {
-        console.log('Using fallback content:', error.message);
-    });
-} catch (error) {
-    console.log('Import failed, using fallback content');
-}
 
 $w.onReady(function () {
     // === INITIALISATION PREMIUM ===
