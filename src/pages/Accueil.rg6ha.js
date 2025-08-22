@@ -7,46 +7,16 @@ import wixData from 'wix-data';
 import { initMobileOptimizations } from './mobileOptimizations';
 import { initMobileSections } from './mobileSections';
 
-// Fallback content in case import fails
-const fallbackMarketingCopy = {
-    hero: {
-        headline: "Transformez Votre Maison avec Forza Construction",
-        subheadline: "Experts en rénovation depuis 15 ans • Plus de 2,000 projets réalisés",
-        primaryCTA: "DEVIS GRATUIT",
-        secondaryCTA: "Voir Nos Réalisations",
-        trustIndicators: [
-            "🏆 #1 Entrepreneur Québec",
-            "⭐ 4.9/5 - Plus de 500 avis", 
-            "🛡️ Garantie 10 ans incluse"
-        ]
-    },
-    testimonials: {
-        reviews: [
-            {
-                name: "Marie-Claire Dubois",
-                title: "Propriétaire, Sainte-Foy",
-                project: "Rénovation cuisine",
-                content: "Travail exceptionnel! Délais respectés, résultat parfait.",
-                rating: 5
-            }
-        ]
-    }
-};
+// Import optimized content system
+import { homepageContent, sectionsContent, conversionContent, deviceOptimizedContent } from '../content/optimizedContent';
 
-const fallbackConversionContent = {
-    urgencyMessages: [
-        "⚡ Promotion spéciale: Consultation gratuite",
-        "🔥 Places limitées cette semaine"
-    ],
-    socialProof: [
-        "✅ Plus de 2,000 familles satisfaites",
-        "🏆 Meilleur entrepreneur résidentiel"
-    ]
-};
+// Detect device type for adaptive content
+const isMobile = wixWindow.viewMode === 'mobile' || window.innerWidth <= 768;
+const deviceType = isMobile ? 'mobile' : 'desktop';
 
-// Use fallback content directly (no import needed for Wix deployment)
-let premiumMarketingCopy = fallbackMarketingCopy;
-let conversionContent = fallbackConversionContent;
+// Get device-optimized content
+let currentContent = deviceOptimizedContent.getContent(deviceType, 'homepage');
+let adaptiveConversionContent = conversionContent;
 
 $w.onReady(function () {
     // === INITIALISATION PREMIUM ===
@@ -142,53 +112,157 @@ $w.onReady(function () {
     }
     
     function updateContentWithPremiumCopy() {
-        // Mettre à jour le contenu avec le copy premium (avec fallback)
-        const copy = premiumMarketingCopy || fallbackMarketingCopy;
+        // Utiliser le contenu optimisé selon l'appareil
+        const content = currentContent;
         
-        // Hero section
+        // Hero section avec contenu adaptatif
         if ($w('#textHeroTitle')) {
-            $w('#textHeroTitle').text = copy.hero.headline;
+            $w('#textHeroTitle').text = content.hero.headline;
         }
         
         if ($w('#textHeroSubtitle')) {
-            $w('#textHeroSubtitle').text = copy.hero.subheadline;
+            $w('#textHeroSubtitle').text = content.hero.subheadline;
+        }
+        
+        if ($w('#textHeroDescription')) {
+            $w('#textHeroDescription').text = content.hero.description;
         }
         
         if ($w('#btnDevisGratuit')) {
-            $w('#btnDevisGratuit').label = copy.hero.primaryCTA;
+            $w('#btnDevisGratuit').label = content.hero.primaryCTA;
         }
         
         if ($w('#btnVoirRealisations')) {
-            $w('#btnVoirRealisations').label = copy.hero.secondaryCTA;
+            $w('#btnVoirRealisations').label = content.hero.secondaryCTA;
         }
         
-        // Services section
+        // Message d'urgence rotatif
+        if ($w('#textUrgencyMessage')) {
+            $w('#textUrgencyMessage').text = content.hero.urgencyMessage;
+            setupUrgencyRotation();
+        }
+        
+        // Services section avec détails adaptatifs
         if ($w('#textServicesTitle')) {
-            $w('#textServicesTitle').text = copy.services.sectionTitle;
+            $w('#textServicesTitle').text = content.services.sectionTitle;
         }
         
         if ($w('#textServicesSubtitle')) {
-            $w('#textServicesSubtitle').text = copy.services.sectionSubtitle;
+            $w('#textServicesSubtitle').text = content.services.sectionSubtitle;
         }
         
-        // CTA section
+        // Charger services avec repeater
+        if ($w('#repeaterServices')) {
+            $w('#repeaterServices').data = content.services.items;
+            
+            $w('#repeaterServices').onItemReady(($item, service) => {
+                $item('#textServiceTitle').text = service.title;
+                $item('#textServiceDesc').text = isMobile ? service.shortDesc : service.longDesc;
+                $item('#textServicePrice').text = service.price;
+                
+                if (service.emoji && $item('#iconService')) {
+                    $item('#iconService').text = service.emoji;
+                }
+                
+                if (!isMobile && service.features && $item('#listFeatures')) {
+                    $item('#listFeatures').text = service.features.join(' • ');
+                }
+                
+                if (service.duration && $item('#textDuration')) {
+                    $item('#textDuration').text = service.duration;
+                }
+                
+                // CTA contextuel
+                if ($item('#btnServiceCTA')) {
+                    $item('#btnServiceCTA').label = deviceOptimizedContent.getContextualCTA('services');
+                    $item('#btnServiceCTA').onClick(() => {
+                        wixLocation.to(`/obtenir-un-devis?service=${service.title.toLowerCase().replace(/\s+/g, '-')}`);
+                    });
+                }
+            });
+        }
+        
+        // CTA section avec contenu adaptatif
         if ($w('#textCtaHeadline')) {
-            $w('#textCtaHeadline').text = copy.cta.primary.headline;
+            $w('#textCtaHeadline').text = content.cta.primary.headline;
         }
         
         if ($w('#textCtaSubheadline')) {
-            $w('#textCtaSubheadline').text = copy.cta.primary.subheadline;
+            $w('#textCtaSubheadline').text = content.cta.primary.subheadline;
         }
         
-        // Trust indicators
-        const trustIndicators = copy.hero.trustIndicators;
-        trustIndicators.forEach((indicator, index) => {
+        // Benefits CTA (desktop seulement)
+        if (!isMobile && content.cta.primary.benefits && $w('#listCtaBenefits')) {
+            $w('#listCtaBenefits').text = content.cta.primary.benefits.join('\n');
+        }
+        
+        // Trust indicators adaptatifs
+        const trustBadges = content.hero.trustBadges;
+        trustBadges.forEach((badge, index) => {
             if ($w(`#textTrust${index + 1}`)) {
-                $w(`#textTrust${index + 1}`).text = indicator;
+                $w(`#textTrust${index + 1}`).text = badge;
             }
         });
         
-        console.log('Premium content updated');
+        // Social proof section
+        if (content.socialProof) {
+            setupSocialProofSection(content.socialProof);
+        }
+        
+        console.log(`Adaptive content loaded for ${deviceType} device`);
+    }
+    
+    function setupUrgencyRotation() {
+        const urgencyMessages = adaptiveConversionContent.urgencyMessages;
+        let currentUrgencyIndex = 0;
+        
+        setInterval(() => {
+            if ($w('#textUrgencyMessage')) {
+                currentUrgencyIndex = (currentUrgencyIndex + 1) % urgencyMessages.length;
+                $w('#textUrgencyMessage').text = urgencyMessages[currentUrgencyIndex];
+            }
+        }, 8000); // Rotation toutes les 8 secondes
+    }
+    
+    function setupSocialProofSection(socialProofData) {
+        // Stats
+        if ($w('#repeaterStats') && socialProofData.stats) {
+            $w('#repeaterStats').data = socialProofData.stats;
+            
+            $w('#repeaterStats').onItemReady(($item, stat) => {
+                $item('#textStatValue').text = stat.value;
+                $item('#textStatLabel').text = stat.label;
+                
+                // Animation des chiffres
+                animateNumber($item('#textStatValue'), stat.value);
+            });
+        }
+        
+        // Témoignages
+        if ($w('#repeaterTestimonials') && socialProofData.testimonials) {
+            $w('#repeaterTestimonials').data = socialProofData.testimonials;
+            
+            $w('#repeaterTestimonials').onItemReady(($item, testimonial) => {
+                $item('#textTestimonialText').text = `"${testimonial.text}"`;
+                $item('#textTestimonialAuthor').text = testimonial.author;
+                $item('#textTestimonialLocation').text = testimonial.location;
+                
+                if (testimonial.project && $item('#textTestimonialProject')) {
+                    $item('#textTestimonialProject').text = testimonial.project;
+                }
+                
+                // Rating stars
+                if ($item('#textTestimonialRating')) {
+                    $item('#textTestimonialRating').text = '⭐'.repeat(testimonial.rating);
+                }
+                
+                // Image si disponible (desktop)
+                if (!isMobile && testimonial.image && $item('#imageTestimonial')) {
+                    $item('#imageTestimonial').src = testimonial.image;
+                    $item('#imageTestimonial').alt = testimonial.author;
+                }
+            });
+        }
     }
     
     function setupPremiumAnimations() {
@@ -390,12 +464,14 @@ $w.onReady(function () {
     
     function startTestimonialRotation() {
         let currentIndex = 0;
-        const testimonials = (premiumMarketingCopy?.testimonials?.reviews) || fallbackMarketingCopy.testimonials.reviews;
+        const testimonials = currentContent.socialProof?.testimonials || [];
         
-        setInterval(() => {
-            currentIndex = (currentIndex + 1) % testimonials.length;
-            updateTestimonial(testimonials[currentIndex]);
-        }, 6000); // Rotation plus lente pour les témoignages premium
+        if (testimonials.length > 1) {
+            setInterval(() => {
+                currentIndex = (currentIndex + 1) % testimonials.length;
+                updateTestimonial(testimonials[currentIndex]);
+            }, 7000); // Rotation optimisée
+        }
     }
     
     // === CHAT WIDGET ===
@@ -692,20 +768,31 @@ $w.onReady(function () {
             }
         });
         
-        // Message d'urgence mobile avec copy premium (avec fallback)
+        // Message d'urgence mobile avec contenu adaptatif
         if ($w('#textMobileUrgency')) {
-            const urgencyMessages = (conversionContent?.urgencyMessages) || fallbackConversionContent.urgencyMessages;
+            const urgencyMessages = adaptiveConversionContent.urgencyMessages;
             const randomMessage = urgencyMessages[Math.floor(Math.random() * urgencyMessages.length)];
             $w('#textMobileUrgency').text = randomMessage;
             $w('#textMobileUrgency').show('fade');
         }
         
-        // Social proof mobile (avec fallback)
+        // Social proof mobile avec badges optimisés
         if ($w('#textMobileSocialProof')) {
-            const socialProofMessages = (conversionContent?.socialProof) || fallbackConversionContent.socialProof;
-            const randomProof = socialProofMessages[Math.floor(Math.random() * socialProofMessages.length)];
+            const socialProofBadges = adaptiveConversionContent.socialProofBadges;
+            const randomProof = socialProofBadges[Math.floor(Math.random() * socialProofBadges.length)];
             $w('#textMobileSocialProof').text = randomProof;
             $w('#textMobileSocialProof').show('fade');
         }
+        
+        // CTA contextuel mobile
+        const ctaButtons = ['#btnDevisGratuit', '#btnAppelezNous'];
+        ctaButtons.forEach((buttonId, index) => {
+            if ($w(buttonId)) {
+                const contextualCTA = deviceOptimizedContent.getContextualCTA('mobile', 'high');
+                if (index === 0) { // Premier bouton
+                    $w(buttonId).label = contextualCTA;
+                }
+            }
+        });
     }
 });

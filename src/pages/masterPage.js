@@ -3,6 +3,7 @@
 
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
+import { initializeScrollOptimization, scrollUtils } from '../utils/scrollOptimization';
 import { initMobileOptimizations } from './mobileOptimizations.js';
 import { initAdvancedMobileNavigation } from './mobileNavigation.js';
 import { initMobilePerformanceOptimizations } from './mobilePerformance.js';
@@ -33,6 +34,9 @@ $w.onReady(function () {
     function initializeCoreOptimizations() {
         // Détection précoce du device
         detectDeviceCapabilities();
+        
+        // Initialiser optimisation du scroll
+        initializeScrollOptimization();
         
         // Configuration responsive de base
         setupResponsiveBase();
