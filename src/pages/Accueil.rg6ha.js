@@ -199,14 +199,14 @@ $w.onReady(function () {
     }
     
     function trackEvent(eventName, parameters) {
-        // Google Analytics 4
-        if (typeof gtag !== 'undefined') {
-            gtag('event', eventName, parameters);
+        // Google Analytics 4 - vérification sécurisée
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', eventName, parameters);
         }
         
-        // Facebook Pixel
-        if (typeof fbq !== 'undefined') {
-            fbq('track', eventName, parameters);
+        // Facebook Pixel - vérification sécurisée
+        if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+            window.fbq('track', eventName, parameters);
         }
         
         console.log('Event tracked:', eventName, parameters);

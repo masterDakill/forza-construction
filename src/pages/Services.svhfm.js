@@ -207,9 +207,9 @@ $w.onReady(function () {
     }
     
     function trackServiceClick(serviceId) {
-        // Analytics
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'service_interest', {
+        // Analytics - vérification sécurisée
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', 'service_interest', {
                 service_id: serviceId,
                 page: 'services'
             });

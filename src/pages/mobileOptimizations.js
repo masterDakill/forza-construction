@@ -548,8 +548,8 @@ class MobileMenu {
     }
     
     trackMenuClick(menuItem) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'mobile_menu_click', {
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', 'mobile_menu_click', {
                 'menu_item': menuItem,
                 'device_type': 'mobile'
             });

@@ -3,6 +3,7 @@
 
 import wixLocation from 'wix-location';
 import wixData from 'wix-data';
+import wixStorage from 'wix-storage';
 import { initMobileOptimizations } from './mobileOptimizations';
 
 $w.onReady(function () {
@@ -300,9 +301,9 @@ $w.onReady(function () {
     }
     
     function trackConversion(type, data) {
-        // Google Analytics
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'conversion', {
+        // Google Analytics - vérification sécurisée
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', 'conversion', {
                 'send_to': 'AW-CONVERSION_ID/CONVERSION_LABEL',
                 'value': 1.0,
                 'currency': 'CAD',
@@ -310,9 +311,9 @@ $w.onReady(function () {
             });
         }
         
-        // Facebook Pixel
-        if (typeof fbq !== 'undefined') {
-            fbq('track', 'Lead', {
+        // Facebook Pixel - vérification sécurisée
+        if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+            window.fbq('track', 'Lead', {
                 value: 0.00,
                 currency: 'CAD',
                 content_name: type
@@ -321,8 +322,8 @@ $w.onReady(function () {
     }
     
     function trackAction(action) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', action, {
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', action, {
                 'event_category': 'engagement',
                 'event_label': 'contact_page'
             });
@@ -722,8 +723,9 @@ $w.onReady(function () {
     
     function setupVoiceInput() {
         // Input vocal pour le message (si supporté)
-        if ('webkitSpeechRecognition' in window && $w('#btnVoiceInput')) {
-            const recognition = new webkitSpeechRecognition();
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition && $w('#btnVoiceInput')) {
+            const recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
             recognition.lang = 'fr-CA';

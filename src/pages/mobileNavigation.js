@@ -640,8 +640,8 @@ class AdvancedMobileMenu {
     }
     
     trackMenuAction(action, data = {}) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', action, {
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', action, {
                 'event_category': 'mobile_menu',
                 'event_label': 'advanced_mobile_navigation',
                 ...data
@@ -949,8 +949,8 @@ class TouchNavigationManager {
     }
     
     trackSwipeNavigation(action, page = null) {
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'swipe_navigation', {
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', 'swipe_navigation', {
                 'event_category': 'mobile_navigation',
                 'action': action,
                 'page': page

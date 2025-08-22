@@ -545,8 +545,8 @@ class MobilePerformanceManager {
     }
     
     pauseNonEssentialTracking() {
-        // Pausarcer tracking non essentiel
-        if (window.gtag) {
+        // Pauser tracking non essentiel
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
             console.log('Pausing non-essential tracking');
         }
     }
@@ -597,8 +597,8 @@ class MobilePerformanceManager {
     
     trackPerformanceMetrics(metrics) {
         // Envoyer métriques de performance
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'performance_metrics', {
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', 'performance_metrics', {
                 'event_category': 'mobile_performance',
                 'custom_map': {
                     'metric_1': 'load_time',

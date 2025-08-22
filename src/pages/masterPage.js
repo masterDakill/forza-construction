@@ -238,9 +238,9 @@ $w.onReady(function () {
         window.addEventListener('error', (event) => {
             console.error('Global error:', event.error);
             
-            // Reporter erreurs critiques
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'exception', {
+            // Reporter erreurs critiques - vérification sécurisée
+            if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+                window.gtag('event', 'exception', {
                     'description': event.error.message,
                     'fatal': false
                 });
@@ -429,9 +429,9 @@ $w.onReady(function () {
     
     function setupGlobalAnalytics() {
         // Configuration analytics globale
-        if (typeof gtag !== 'undefined') {
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
             // Tracking device info
-            gtag('event', 'page_view', {
+            window.gtag('event', 'page_view', {
                 'device_type': window.deviceCapabilities?.isMobile ? 'mobile' : 'desktop'
             });
         }
@@ -456,8 +456,8 @@ $w.onReady(function () {
                 link.rel = 'noopener noreferrer';
                 
                 // Tracker liens externes
-                if (typeof gtag !== 'undefined') {
-                    gtag('event', 'click', {
+                if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+                    window.gtag('event', 'click', {
                         'event_category': 'outbound',
                         'event_label': link.href
                     });
@@ -471,8 +471,8 @@ $w.onReady(function () {
         window.openChat = function() {
             console.log('Opening chat widget...');
             
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'chat_opened', {
+            if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+                window.gtag('event', 'chat_opened', {
                     'event_category': 'engagement'
                 });
             }
