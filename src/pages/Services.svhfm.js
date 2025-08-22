@@ -3,6 +3,8 @@
 
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
+import wixWindow from 'wix-window';
+import wixStorage from 'wix-storage';
 
 $w.onReady(function () {
     // === INITIALISATION ===

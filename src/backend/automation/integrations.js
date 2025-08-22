@@ -6,7 +6,7 @@ import wixFetch from 'wix-fetch';
 import wixSecrets from 'wix-secrets';
 
 // === WEBHOOK MAKE.COM ===
-export async function sendToMake(data) {
+async function sendToMake(data) {
     const webhookUrl = await wixSecrets.getSecret("MAKE_WEBHOOK_URL");
     
     try {
@@ -33,7 +33,7 @@ export async function sendToMake(data) {
 }
 
 // === AIRTABLE INTEGRATION ===
-export async function syncWithAirtable(recordType, data) {
+async function syncWithAirtable(recordType, data) {
     const apiKey = await wixSecrets.getSecret("AIRTABLE_API_KEY");
     const baseId = await wixSecrets.getSecret("AIRTABLE_BASE_ID");
     
@@ -68,7 +68,7 @@ export async function syncWithAirtable(recordType, data) {
 }
 
 // === SLACK NOTIFICATIONS ===
-export async function sendSlackNotification(channel, message) {
+async function sendSlackNotification(channel, message) {
     const webhookUrl = await wixSecrets.getSecret("SLACK_WEBHOOK_URL");
     
     const payload = {
@@ -92,7 +92,7 @@ export async function sendSlackNotification(channel, message) {
 }
 
 // === EMAIL AUTOMATION ===
-export async function sendAutomatedEmail(to, templateId, variables) {
+async function sendAutomatedEmail(to, templateId, variables) {
     // Intégration avec SendGrid/Mailchimp
     const apiKey = await wixSecrets.getSecret("SENDGRID_API_KEY");
     
@@ -126,7 +126,7 @@ export async function sendAutomatedEmail(to, templateId, variables) {
 }
 
 // === LEAD SCORING ===
-export async function calculateLeadScore(leadData) {
+async function calculateLeadScore(leadData) {
     let score = 0;
     
     // Critères de scoring
@@ -152,7 +152,7 @@ export async function calculateLeadScore(leadData) {
 }
 
 // === CRM SYNC ===
-export async function syncWithCRM(contact) {
+async function syncWithCRM(contact) {
     // HubSpot/Pipedrive integration
     const apiKey = await wixSecrets.getSecret("HUBSPOT_API_KEY");
     
@@ -186,7 +186,7 @@ export async function syncWithCRM(contact) {
 }
 
 // === TRELLO PROJECT CREATION ===
-export async function createTrelloCard(projectData) {
+async function createTrelloCard(projectData) {
     const apiKey = await wixSecrets.getSecret("TRELLO_API_KEY");
     const token = await wixSecrets.getSecret("TRELLO_TOKEN");
     const listId = await wixSecrets.getSecret("TRELLO_LIST_ID");
@@ -218,7 +218,7 @@ export async function createTrelloCard(projectData) {
 }
 
 // === GOOGLE CALENDAR SYNC ===
-export async function createCalendarEvent(eventData) {
+async function createCalendarEvent(eventData) {
     // Intégration Google Calendar pour rendez-vous
     const calendarId = await wixSecrets.getSecret("GOOGLE_CALENDAR_ID");
     const apiKey = await wixSecrets.getSecret("GOOGLE_API_KEY");

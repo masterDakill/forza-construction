@@ -16,6 +16,49 @@ $w.onReady(function () {
     initMobileOptimizations();
     setupMobileSpecificFeatures();
     
+    // === CONFIGURATION CONVERSION TRACKING ===
+    function setupConversionTracking() {
+        // Configuration du tracking de conversion
+        console.log('Conversion tracking initialized');
+        
+        // Tracker les événements de conversion importants
+        trackConversionEvents();
+    }
+    
+    function trackConversionEvents() {
+        // Événements de conversion à tracker
+        const conversionElements = [
+            { id: '#btnDevisGratuit', event: 'quote_request' },
+            { id: '#btnAppelezNous', event: 'phone_call' },
+            { id: '#formContactRapide', event: 'contact_form' }
+        ];
+        
+        conversionElements.forEach(item => {
+            if ($w(item.id)) {
+                $w(item.id).onClick(() => {
+                    trackConversion(item.event, {
+                        element_id: item.id,
+                        page: 'homepage'
+                    });
+                });
+            }
+        });
+    }
+    
+    function trackConversion(event, data = {}) {
+        // Google Analytics conversion tracking
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+            window.gtag('event', 'conversion', {
+                'send_to': 'AW-CONVERSION_ID',
+                'event_category': 'conversion',
+                'event_label': event,
+                ...data
+            });
+        }
+        
+        console.log('Conversion tracked:', event, data);
+    }
+    
     // === ANIMATIONS D'ENTRÉE ===
     function setupAnimations() {
         // Hero section fade-in
