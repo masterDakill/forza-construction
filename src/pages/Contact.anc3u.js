@@ -1,8 +1,9 @@
 // Page Contact - Forza Construction Inc.
-// Formulaire intelligent avec validation et automatisation
+// Formulaire intelligent avec validation et automatisation + optimisations mobile
 
 import wixLocation from 'wix-location';
 import wixData from 'wix-data';
+import { initMobileOptimizations } from './mobileOptimizations';
 
 $w.onReady(function () {
     // === INITIALISATION ===
@@ -10,6 +11,10 @@ $w.onReady(function () {
     displayContactInfo();
     setupMap();
     setupBusinessHours();
+    
+    // === OPTIMISATIONS MOBILE ===
+    initMobileOptimizations();
+    setupMobileContactFeatures();
     
     // === FORMULAIRE DE CONTACT AVANCÉ ===
     function setupContactForm() {
@@ -331,6 +336,548 @@ $w.onReady(function () {
             return data.ip;
         } catch {
             return 'unknown';
+        }
+    }
+    
+    // === FONCTIONNALITÉS MOBILES SPÉCIFIQUES ===
+    function setupMobileContactFeatures() {
+        if (!window.mobileDetector?.isMobile) return;
+        
+        // 1. Quick Actions mobiles
+        setupMobileQuickActions();
+        
+        // 2. Formulaire mobile optimisé
+        setupMobileFormEnhancements();
+        
+        // 3. Géolocalisation intelligente
+        setupMobileLocation();
+        
+        // 4. Contact rapide par voix
+        setupVoiceInput();
+        
+        // 5. Partage de localisation
+        setupLocationSharing();
+    }
+    
+    function setupMobileQuickActions() {
+        // Barre d'actions rapides mobile
+        if ($w('#htmlMobileActions')) {
+            const actionsHTML = `
+                <div class="mobile-quick-actions" style="
+                    position: fixed;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background: linear-gradient(135deg, #2c3e50, #34495e);
+                    padding: 15px;
+                    display: flex;
+                    justify-content: space-around;
+                    box-shadow: 0 -2px 20px rgba(0,0,0,0.3);
+                    z-index: 999;
+                ">
+                    <button id="quickCall" class="action-btn" style="
+                        background: #27ae60;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 25px;
+                        font-weight: bold;
+                        flex: 1;
+                        margin: 0 5px;
+                        font-size: 14px;
+                    ">
+                        📞 Appeler
+                    </button>
+                    <button id="quickWhatsApp" class="action-btn" style="
+                        background: #25d366;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 25px;
+                        font-weight: bold;
+                        flex: 1;
+                        margin: 0 5px;
+                        font-size: 14px;
+                    ">
+                        💬 WhatsApp
+                    </button>
+                    <button id="quickEmail" class="action-btn" style="
+                        background: #3498db;
+                        color: white;
+                        border: none;
+                        padding: 12px 20px;
+                        border-radius: 25px;
+                        font-weight: bold;
+                        flex: 1;
+                        margin: 0 5px;
+                        font-size: 14px;
+                    ">
+                        ✉️ Email
+                    </button>
+                </div>
+            `;
+            $w('#htmlMobileActions').html = actionsHTML;
+            
+            // Event listeners
+            setTimeout(() => {
+                document.getElementById('quickCall')?.addEventListener('click', () => {
+                    trackAction('quick_call_mobile');
+                    wixLocation.to('tel:4181234567');
+                });
+                
+                document.getElementById('quickWhatsApp')?.addEventListener('click', () => {
+                    trackAction('quick_whatsapp_mobile');
+                    const message = encodeURIComponent('Bonjour! Je souhaite obtenir un devis pour mon projet de construction.');
+                    wixLocation.to(`https://wa.me/14181234567?text=${message}`);
+                });
+                
+                document.getElementById('quickEmail')?.addEventListener('click', () => {
+                    trackAction('quick_email_mobile');
+                    wixLocation.to('mailto:constructionforzainc@gmail.com?subject=Demande de devis');
+                });
+            }, 100);
+        }
+    }
+    
+    function setupMobileFormEnhancements() {
+        // Auto-complétion intelligente mobile
+        setupSmartAutocomplete();
+        
+        // Validation visuelle améliorée
+        setupEnhancedValidation();
+        
+        // Sauvegarde automatique
+        setupAutoSave();
+        
+        // Soumission optimisée
+        setupOptimizedSubmission();
+    }
+    
+    function setupSmartAutocomplete() {
+        // Suggestions basées sur localisation
+        if ($w('#inputVille')) {
+            const villesQuebec = [
+                'Québec', 'Lévis', 'Beauport', 'Sainte-Foy', 'Charlesbourg',
+                'Ancienne-Lorette', 'Saint-Augustin-de-Desmaures'
+            ];
+            
+            $w('#inputVille').onInput = (event) => {
+                const value = event.target.value.toLowerCase();
+                const suggestions = villesQuebec.filter(ville => 
+                    ville.toLowerCase().includes(value)
+                );
+                
+                if (suggestions.length > 0 && value.length > 2) {
+                    showCitySuggestions(suggestions);
+                }
+            };
+        }
+        
+        // Auto-détection du type de projet
+        if ($w('#inputMessage')) {
+            $w('#inputMessage').onInput = (event) => {
+                const message = event.target.value.toLowerCase();
+                const projectTypes = {
+                    'cuisine': 'Rénovation de cuisine',
+                    'salle de bain': 'Rénovation de salle de bain',
+                    'toiture': 'Réfection de toiture',
+                    'fondation': 'Réparation de fondation',
+                    'extension': 'Agrandissement'
+                };
+                
+                Object.keys(projectTypes).forEach(keyword => {
+                    if (message.includes(keyword) && $w('#dropdownSujet')) {
+                        $w('#dropdownSujet').value = projectTypes[keyword];
+                    }
+                });
+            };
+        }
+    }
+    
+    function setupEnhancedValidation() {
+        // Validation en temps réel avec indicateurs visuels
+        const fields = [
+            { id: '#inputNom', type: 'name' },
+            { id: '#inputEmail', type: 'email' },
+            { id: '#inputPhone', type: 'phone' }
+        ];
+        
+        fields.forEach(field => {
+            if ($w(field.id)) {
+                addValidationIndicator(field.id, field.type);
+            }
+        });
+    }
+    
+    function addValidationIndicator(fieldId, type) {
+        $w(fieldId).onInput = (event) => {
+            const value = event.target.value;
+            const isValid = validateFieldType(value, type);
+            
+            // Indicateur visuel mobile
+            const indicator = isValid ? '✅' : '❌';
+            const color = isValid ? '#27ae60' : '#e74c3c';
+            
+            // Ajouter indicateur (simulé avec border et couleur)
+            $w(fieldId).style.borderColor = color;
+            $w(fieldId).style.borderWidth = '2px';
+            
+            // Feedback haptique
+            if (!isValid && navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        };
+    }
+    
+    function validateFieldType(value, type) {
+        switch (type) {
+            case 'email':
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+            case 'phone':
+                return /^[\d\s\-\(\)\+]+$/.test(value) && value.replace(/\D/g, '').length >= 10;
+            case 'name':
+                return value.length >= 2;
+            default:
+                return true;
+        }
+    }
+    
+    function setupAutoSave() {
+        // Sauvegarde automatique des données de formulaire
+        const formFields = ['#inputNom', '#inputEmail', '#inputPhone', '#inputMessage'];
+        
+        formFields.forEach(fieldId => {
+            if ($w(fieldId)) {
+                $w(fieldId).onInput = (event) => {
+                    saveFormData(fieldId, event.target.value);
+                };
+            }
+        });
+        
+        // Restaurer données sauvegardées
+        restoreFormData();
+    }
+    
+    function saveFormData(fieldId, value) {
+        if (typeof Storage !== 'undefined') {
+            const formData = JSON.parse(localStorage.getItem('contactFormData') || '{}');
+            formData[fieldId] = value;
+            formData.timestamp = Date.now();
+            localStorage.setItem('contactFormData', JSON.stringify(formData));
+        }
+    }
+    
+    function restoreFormData() {
+        if (typeof Storage !== 'undefined') {
+            const formData = JSON.parse(localStorage.getItem('contactFormData') || '{}');
+            const maxAge = 24 * 60 * 60 * 1000; // 24 heures
+            
+            if (formData.timestamp && (Date.now() - formData.timestamp) < maxAge) {
+                Object.keys(formData).forEach(fieldId => {
+                    if (fieldId !== 'timestamp' && $w(fieldId)) {
+                        $w(fieldId).value = formData[fieldId];
+                    }
+                });
+                
+                // Afficher message de restauration
+                if ($w('#textAutoSaveRestore')) {
+                    $w('#textAutoSaveRestore').text = "📝 Données précédentes restaurées";
+                    $w('#textAutoSaveRestore').show('fade');
+                    setTimeout(() => $w('#textAutoSaveRestore').hide('fade'), 3000);
+                }
+            }
+        }
+    }
+    
+    function setupOptimizedSubmission() {
+        // Soumission optimisée avec retry et offline support
+        if ($w('#btnSubmitContact')) {
+            $w('#btnSubmitContact').onClick(async () => {
+                if (!navigator.onLine) {
+                    handleOfflineSubmission();
+                    return;
+                }
+                
+                // Soumission normale avec retry
+                await submitWithRetry();
+            });
+        }
+    }
+    
+    function handleOfflineSubmission() {
+        // Sauvegarder pour soumission ultérieure
+        const formData = collectFormData();
+        
+        if (typeof Storage !== 'undefined') {
+            const pendingSubmissions = JSON.parse(localStorage.getItem('pendingSubmissions') || '[]');
+            pendingSubmissions.push({
+                ...formData,
+                timestamp: Date.now(),
+                attempts: 0
+            });
+            localStorage.setItem('pendingSubmissions', JSON.stringify(pendingSubmissions));
+        }
+        
+        showOfflineMessage();
+        
+        // Écouter reconnexion
+        window.addEventListener('online', processPendingSubmissions);
+    }
+    
+    function showOfflineMessage() {
+        if ($w('#textOfflineMessage')) {
+            $w('#textOfflineMessage').text = "📱 Mode hors ligne - Votre message sera envoyé dès la reconnexion";
+            $w('#textOfflineMessage').show('fade');
+        }
+    }
+    
+    function processPendingSubmissions() {
+        if (typeof Storage === 'undefined') return;
+        
+        const pendingSubmissions = JSON.parse(localStorage.getItem('pendingSubmissions') || '[]');
+        
+        pendingSubmissions.forEach(async (submission, index) => {
+            try {
+                await sendToAutomation(submission);
+                // Supprimer de la liste des en attente
+                pendingSubmissions.splice(index, 1);
+                localStorage.setItem('pendingSubmissions', JSON.stringify(pendingSubmissions));
+                
+                showReconnectionSuccess();
+            } catch (error) {
+                console.error('Failed to send pending submission:', error);
+            }
+        });
+    }
+    
+    function showReconnectionSuccess() {
+        if ($w('#textReconnectionSuccess')) {
+            $w('#textReconnectionSuccess').text = "✅ Messages en attente envoyés avec succès!";
+            $w('#textReconnectionSuccess').show('fade');
+            setTimeout(() => $w('#textReconnectionSuccess').hide('fade'), 5000);
+        }
+    }
+    
+    function setupMobileLocation() {
+        // Géolocalisation pour pré-remplir adresse
+        if ($w('#btnDetectLocation') && 'geolocation' in navigator) {
+            $w('#btnDetectLocation').onClick(() => {
+                $w('#btnDetectLocation').label = "Localisation...";
+                $w('#btnDetectLocation').disable();
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        reverseGeocode(position.coords.latitude, position.coords.longitude);
+                    },
+                    (error) => {
+                        console.error('Geolocation error:', error);
+                        $w('#btnDetectLocation').label = "Localiser";
+                        $w('#btnDetectLocation').enable();
+                        showLocationError();
+                    }
+                );
+            });
+        }
+    }
+    
+    async function reverseGeocode(lat, lng) {
+        try {
+            // Utiliser service de géocodage inversé
+            const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=fr`);
+            const data = await response.json();
+            
+            if (data && data.city) {
+                if ($w('#inputVille')) {
+                    $w('#inputVille').value = data.city;
+                }
+                if ($w('#inputCodePostal')) {
+                    $w('#inputCodePostal').value = data.postcode || '';
+                }
+                
+                showLocationSuccess(data.city);
+            }
+        } catch (error) {
+            console.error('Reverse geocoding error:', error);
+        }
+        
+        $w('#btnDetectLocation').label = "Localiser";
+        $w('#btnDetectLocation').enable();
+    }
+    
+    function showLocationSuccess(city) {
+        if ($w('#textLocationSuccess')) {
+            $w('#textLocationSuccess').text = `📍 Localisation détectée: ${city}`;
+            $w('#textLocationSuccess').show('fade');
+            setTimeout(() => $w('#textLocationSuccess').hide('fade'), 3000);
+        }
+    }
+    
+    function showLocationError() {
+        if ($w('#textLocationError')) {
+            $w('#textLocationError').text = "❌ Impossible de détecter votre localisation";
+            $w('#textLocationError').show('fade');
+            setTimeout(() => $w('#textLocationError').hide('fade'), 3000);
+        }
+    }
+    
+    function setupVoiceInput() {
+        // Input vocal pour le message (si supporté)
+        if ('webkitSpeechRecognition' in window && $w('#btnVoiceInput')) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'fr-CA';
+            
+            $w('#btnVoiceInput').onClick(() => {
+                startVoiceRecognition(recognition);
+            });
+            
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                if ($w('#inputMessage')) {
+                    $w('#inputMessage').value += (($w('#inputMessage').value ? ' ' : '') + transcript);
+                }
+                
+                trackAction('voice_input_used');
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Voice recognition error:', event.error);
+                showVoiceError();
+            };
+        } else if ($w('#btnVoiceInput')) {
+            $w('#btnVoiceInput').hide(); // Masquer si non supporté
+        }
+    }
+    
+    function startVoiceRecognition(recognition) {
+        $w('#btnVoiceInput').label = "🎤 Écoute...";
+        $w('#btnVoiceInput').disable();
+        
+        recognition.start();
+        
+        setTimeout(() => {
+            recognition.stop();
+            $w('#btnVoiceInput').label = "🎤 Vocal";
+            $w('#btnVoiceInput').enable();
+        }, 5000);
+    }
+    
+    function showVoiceError() {
+        if ($w('#textVoiceError')) {
+            $w('#textVoiceError').text = "❌ Erreur de reconnaissance vocale";
+            $w('#textVoiceError').show('fade');
+            setTimeout(() => $w('#textVoiceError').hide('fade'), 3000);
+        }
+    }
+    
+    function setupLocationSharing() {
+        // Partage de localisation pour devis sur site
+        if ($w('#btnShareLocation') && 'geolocation' in navigator) {
+            $w('#btnShareLocation').onClick(() => {
+                shareCurrentLocation();
+            });
+        }
+    }
+    
+    function shareCurrentLocation() {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                const mapsLink = `https://maps.google.com/?q=${latitude},${longitude}`;
+                
+                // Ajouter aux données de formulaire
+                if ($w('#inputMessage')) {
+                    const currentMessage = $w('#inputMessage').value;
+                    $w('#inputMessage').value = currentMessage + 
+                        `\n\n📍 Ma localisation: ${mapsLink}`;
+                }
+                
+                showLocationShared();
+                trackAction('location_shared');
+            },
+            (error) => {
+                console.error('Location sharing error:', error);
+                showLocationShareError();
+            }
+        );
+    }
+    
+    function showLocationShared() {
+        if ($w('#textLocationShared')) {
+            $w('#textLocationShared').text = "📍 Localisation ajoutée au message";
+            $w('#textLocationShared').show('fade');
+            setTimeout(() => $w('#textLocationShared').hide('fade'), 3000);
+        }
+    }
+    
+    function showLocationShareError() {
+        if ($w('#textLocationShareError')) {
+            $w('#textLocationShareError').text = "❌ Impossible de partager la localisation";
+            $w('#textLocationShareError').show('fade');
+            setTimeout(() => $w('#textLocationShareError').hide('fade'), 3000);
+        }
+    }
+    
+    function collectFormData() {
+        return {
+            nom: $w('#inputNom')?.value || '',
+            email: $w('#inputEmail')?.value || '',
+            phone: $w('#inputPhone')?.value || '',
+            entreprise: $w('#inputEntreprise')?.value || '',
+            sujet: $w('#dropdownSujet')?.value || '',
+            message: $w('#inputMessage')?.value || '',
+            ville: $w('#inputVille')?.value || '',
+            codePostal: $w('#inputCodePostal')?.value || '',
+            urgence: $w('#checkboxUrgent')?.checked || false,
+            newsletter: $w('#checkboxNewsletter')?.checked || false
+        };
+    }
+    
+    async function submitWithRetry(maxRetries = 3) {
+        let attempts = 0;
+        
+        while (attempts < maxRetries) {
+            try {
+                const formData = collectFormData();
+                await sendToAutomation(formData);
+                
+                // Succès - nettoyer données sauvegardées
+                if (typeof Storage !== 'undefined') {
+                    localStorage.removeItem('contactFormData');
+                }
+                
+                showSuccess();
+                return;
+                
+            } catch (error) {
+                attempts++;
+                console.error(`Submission attempt ${attempts} failed:`, error);
+                
+                if (attempts >= maxRetries) {
+                    showSubmissionError();
+                    return;
+                }
+                
+                // Attendre avant nouvel essai
+                await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+            }
+        }
+    }
+    
+    function showSubmissionError() {
+        if ($w('#textSubmissionError')) {
+            $w('#textSubmissionError').text = "❌ Erreur d'envoi. Veuillez réessayer ou nous appeler.";
+            $w('#textSubmissionError').show('fade');
+        }
+    }
+    
+    function showCitySuggestions(suggestions) {
+        // Afficher suggestions de villes (simulé)
+        if ($w('#textCitySuggestions')) {
+            $w('#textCitySuggestions').text = `💡 Suggestions: ${suggestions.slice(0, 3).join(', ')}`;
+            $w('#textCitySuggestions').show('fade');
+            setTimeout(() => $w('#textCitySuggestions').hide('fade'), 5000);
         }
     }
 });

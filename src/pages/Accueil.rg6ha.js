@@ -1,15 +1,20 @@
 // Page d'accueil optimisée - Forza Construction Inc.
-// Configuration professionnelle avec tracking et conversions
+// Configuration professionnelle avec tracking et conversions + optimisations mobile
 
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import wixData from 'wix-data';
+import { initMobileOptimizations } from './mobileOptimizations';
 
 $w.onReady(function () {
     // === INITIALISATION ===
     initializeAnalytics();
     setupAnimations();
     setupConversionTracking();
+    
+    // === OPTIMISATIONS MOBILE ===
+    initMobileOptimizations();
+    setupMobileSpecificFeatures();
     
     // === ANIMATIONS D'ENTRÉE ===
     function setupAnimations() {
@@ -237,5 +242,204 @@ $w.onReady(function () {
     function openChatWidget() {
         // Implémentation du chat
         wixWindow.openLightbox('ChatSupport');
+    }
+    
+    // === FONCTIONNALITÉS SPÉCIFIQUES MOBILES ===
+    function setupMobileSpecificFeatures() {
+        if (!window.mobileDetector?.isMobile) return;
+        
+        // 1. Bouton d'appel flottant sur mobile
+        setupFloatingCallButton();
+        
+        // 2. Swipe navigation pour portfolio
+        setupMobilePortfolioSwipe();
+        
+        // 3. Touch feedback amélioré
+        setupMobileTouchFeedback();
+        
+        // 4. Auto-masquer header au scroll
+        setupMobileHeaderHide();
+        
+        // 5. Optimiser CTA mobile
+        optimizeMobileCTA();
+    }
+    
+    function setupFloatingCallButton() {
+        // Créer bouton d'appel flottant
+        if ($w('#htmlFloatingCall')) {
+            const floatingCallHTML = `
+                <div id="floatingCallBtn" style="
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    width: 60px;
+                    height: 60px;
+                    background: linear-gradient(135deg, #ff6b35, #f7931e);
+                    border-radius: 50%;
+                    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    z-index: 1000;
+                    animation: pulse 2s infinite;
+                ">
+                    <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+                        <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>
+                    </svg>
+                </div>
+                <style>
+                @keyframes pulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                    100% { transform: scale(1); }
+                }
+                </style>
+            `;
+            $w('#htmlFloatingCall').html = floatingCallHTML;
+            
+            // Event listener via HTML
+            setTimeout(() => {
+                const btn = document.getElementById('floatingCallBtn');
+                if (btn) {
+                    btn.onclick = () => {
+                        trackEvent('floating_call_click', {
+                            source: 'mobile_homepage'
+                        });
+                        wixLocation.to('tel:4181234567');
+                    };
+                }
+            }, 100);
+        }
+    }
+    
+    function setupMobilePortfolioSwipe() {
+        if ($w('#repeaterPortfolio')) {
+            let currentPortfolioIndex = 0;
+            const portfolioItems = $w('#repeaterPortfolio').data || [];
+            
+            // Ajouter indicateurs de swipe
+            if ($w('#htmlSwipeIndicator')) {
+                const indicatorHTML = `
+                    <div style="text-align: center; padding: 10px; color: #666;">
+                        👈 Glissez pour voir plus de projets 👉
+                    </div>
+                `;
+                $w('#htmlSwipeIndicator').html = indicatorHTML;
+            }
+        }
+    }
+    
+    function setupMobileTouchFeedback() {
+        // Feedback tactile pour tous les éléments interactifs
+        const interactiveElements = [
+            '#btnDevisGratuit',
+            '#btnAppelezNous', 
+            '#repeaterPortfolio',
+            '#repeaterTestimonials'
+        ];
+        
+        interactiveElements.forEach(elementId => {
+            if ($w(elementId)) {
+                addRippleEffect(elementId);
+            }
+        });
+    }
+    
+    function addRippleEffect(elementId) {
+        const element = $w(elementId);
+        
+        element.onTouchStart = (event) => {
+            // Créer effet ripple
+            if ($w('#htmlRippleEffect')) {
+                const rippleHTML = `
+                    <div class="ripple" style="
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.6);
+                        transform: scale(0);
+                        animation: ripple-animation 0.6s linear;
+                        width: 20px;
+                        height: 20px;
+                        left: ${event.touches[0].clientX - 10}px;
+                        top: ${event.touches[0].clientY - 10}px;
+                    ">
+                    </div>
+                    <style>
+                    @keyframes ripple-animation {
+                        to {
+                            transform: scale(4);
+                            opacity: 0;
+                        }
+                    }
+                    </style>
+                `;
+                $w('#htmlRippleEffect').html = rippleHTML;
+            }
+        };
+    }
+    
+    function setupMobileHeaderHide() {
+        let lastScrollY = 0;
+        let scrollTimeout;
+        
+        $w('#page').onScroll = (event) => {
+            const currentScrollY = event.target.scrollY;
+            
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                if (currentScrollY > lastScrollY && currentScrollY > 100) {
+                    // Scroll vers le bas - masquer header
+                    if ($w('#header')) {
+                        $w('#header').hide('slide', {
+                            duration: 300,
+                            direction: 'top'
+                        });
+                    }
+                } else if (currentScrollY < lastScrollY) {
+                    // Scroll vers le haut - afficher header
+                    if ($w('#header')) {
+                        $w('#header').show('slide', {
+                            duration: 300,
+                            direction: 'top'
+                        });
+                    }
+                }
+                lastScrollY = currentScrollY;
+            }, 100);
+        };
+    }
+    
+    function optimizeMobileCTA() {
+        // Boutons CTA plus visibles sur mobile
+        const ctaButtons = ['#btnDevisGratuit', '#btnAppelezNous'];
+        
+        ctaButtons.forEach(buttonId => {
+            if ($w(buttonId)) {
+                const button = $w(buttonId);
+                
+                // Styles mobile optimisés
+                button.style.width = '100%';
+                button.style.maxWidth = '300px';
+                button.style.height = '50px';
+                button.style.fontSize = '18px';
+                button.style.fontWeight = 'bold';
+                button.style.margin = '10px auto';
+                
+                // Animation attention sur mobile
+                setInterval(() => {
+                    button.style.transform = 'scale(1.05)';
+                    setTimeout(() => {
+                        button.style.transform = 'scale(1)';
+                    }, 200);
+                }, 5000);
+            }
+        });
+        
+        // Message d'urgence mobile
+        if ($w('#textMobileUrgency')) {
+            $w('#textMobileUrgency').text = "📱 Appelez maintenant pour un devis GRATUIT!";
+            $w('#textMobileUrgency').show('fade');
+        }
     }
 });
