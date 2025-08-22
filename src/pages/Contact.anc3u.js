@@ -296,8 +296,17 @@ $w.onReady(function () {
     }
     
     function showError(message) {
-        $w('#textError').text = message;
-        $w('#boxError').show('fade');
+        if ($w('#textError')) {
+            $w('#textError').text = message;
+            $w('#textError').style.color = '#E74C3C';
+            $w('#textError').style.background = 'rgba(231, 76, 60, 0.1)';
+            $w('#textError').style.padding = '1rem';
+            $w('#textError').style.borderRadius = '8px';
+            $w('#textError').style.border = '1px solid rgba(231, 76, 60, 0.2)';
+        }
+        if ($w('#boxError')) {
+            $w('#boxError').show('fade');
+        }
     }
     
     function trackConversion(type, data) {

@@ -1,9 +1,10 @@
 // Sections Mobiles Avancées - Forza Construction Inc.
-// Sections spécialement optimisées pour l'engagement mobile
+// Sections spécialement optimisées pour l'engagement mobile avec design premium sombre
 
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import wixData from 'wix-data';
+import { premiumMarketingCopy, conversionContent } from '../content/premiumMarketingCopy';
 
 // === SECTIONS MOBILES INTERACTIVES ===
 class MobileSectionsManager {
@@ -57,7 +58,8 @@ class MobileSectionsManager {
                     bottom: 0;
                     left: 0;
                     right: 0;
-                    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+                    background: linear-gradient(135deg, #0A0F1C 0%, #1A2332 95%);
+                    border-top: 2px solid rgba(212, 165, 116, 0.2);
                     padding: 12px 15px;
                     display: flex;
                     justify-content: space-between;
@@ -67,9 +69,9 @@ class MobileSectionsManager {
                     backdrop-filter: blur(10px);
                 ">
                     <button id="quickCallAction" style="
-                        background: rgba(255,255,255,0.2);
-                        border: 1px solid rgba(255,255,255,0.3);
-                        color: white;
+                        background: linear-gradient(135deg, #D4A574 0%, #B5754D 100%);
+                        border: 1px solid rgba(212, 165, 116, 0.3);
+                        color: #1A202C;
                         padding: 12px;
                         border-radius: 50%;
                         width: 50px;
@@ -80,11 +82,12 @@ class MobileSectionsManager {
                         font-size: 18px;
                         cursor: pointer;
                         transition: all 0.3s ease;
+                        box-shadow: 0 4px 12px rgba(212, 165, 116, 0.2);
                     ">📞</button>
                     
                     <button id="quickQuoteAction" style="
-                        background: rgba(255,255,255,0.9);
-                        color: #ff6b35;
+                        background: linear-gradient(135deg, #D4A574 0%, #B5754D 100%);
+                        color: #1A202C;
                         border: none;
                         padding: 12px 25px;
                         border-radius: 25px;
@@ -93,13 +96,14 @@ class MobileSectionsManager {
                         flex: 1;
                         margin: 0 15px;
                         cursor: pointer;
-                        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                    ">💰 DEVIS GRATUIT</button>
+                        box-shadow: 0 4px 16px rgba(212, 165, 116, 0.3);
+                        text-shadow: none;
+                    ">⭐ DEVIS PREMIUM</button>
                     
                     <button id="quickWhatsAppAction" style="
-                        background: #25d366;
-                        border: none;
-                        color: white;
+                        background: linear-gradient(135deg, #2C3E5C 0%, #15212E 100%);
+                        border: 1px solid rgba(139, 157, 195, 0.2);
+                        color: #F8FAFC;
                         padding: 12px;
                         border-radius: 50%;
                         width: 50px;
@@ -110,6 +114,7 @@ class MobileSectionsManager {
                         font-size: 18px;
                         cursor: pointer;
                         transition: all 0.3s ease;
+                        box-shadow: 0 4px 12px rgba(44, 62, 92, 0.3);
                     ">💬</button>
                 </div>
             `;
@@ -149,14 +154,16 @@ class MobileSectionsManager {
             const beforeAfterHTML = `
                 <div class="mobile-section before-after-section" style="
                     padding: 30px 20px;
-                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                    background: linear-gradient(135deg, #15212E 0%, #2C3E5C 100%);
+                    border: 1px solid rgba(139, 157, 195, 0.1);
                 ">
                     <h2 style="
                         text-align: center;
                         margin-bottom: 25px;
-                        color: #2c3e50;
+                        color: #F8FAFC;
                         font-size: 24px;
                         font-weight: bold;
+                        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
                     ">🏗️ Transformations Réalisées</h2>
                     
                     <div id="beforeAfterSlider" style="
@@ -164,7 +171,8 @@ class MobileSectionsManager {
                         margin-bottom: 20px;
                         border-radius: 15px;
                         overflow: hidden;
-                        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+                        border: 1px solid rgba(212, 165, 116, 0.1);
                     ">
                         <div class="slider-container" style="
                             display: flex;
@@ -187,20 +195,20 @@ class MobileSectionsManager {
                     
                     <div style="text-align: center;">
                         <p style="
-                            color: #6c757d;
+                            color: #CBD5E0;
                             margin-bottom: 20px;
                             font-size: 14px;
                         ">👈 Glissez pour voir plus de transformations 👉</p>
                         
                         <button id="viewAllProjects" style="
-                            background: linear-gradient(135deg, #ff6b35, #f7931e);
-                            color: white;
+                            background: linear-gradient(135deg, #D4A574 0%, #B5754D 100%);
+                            color: #1A202C;
                             border: none;
                             padding: 12px 30px;
                             border-radius: 25px;
                             font-weight: bold;
                             cursor: pointer;
-                            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+                            box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
                         ">Voir Tous Nos Projets</button>
                     </div>
                 </div>
@@ -252,7 +260,9 @@ class MobileSectionsManager {
             slide.style.cssText = `
                 min-width: 100%;
                 position: relative;
-                background: white;
+                background: linear-gradient(135deg, #0A0F1C 0%, #1A2332 100%);
+                border-radius: 8px;
+                overflow: hidden;
             `;
             
             slide.innerHTML = `
@@ -323,13 +333,13 @@ class MobileSectionsManager {
                 <div style="padding: 15px; text-align: center;">
                     <h3 style="
                         margin: 0 0 5px 0;
-                        color: #2c3e50;
+                        color: #F8FAFC;
                         font-size: 16px;
                         font-weight: bold;
                     ">${project.title}</h3>
                     <p style="
                         margin: 0;
-                        color: #6c757d;
+                        color: #CBD5E0;
                         font-size: 12px;
                     ">${project.description}</p>
                 </div>
@@ -343,7 +353,7 @@ class MobileSectionsManager {
                 width: 10px;
                 height: 10px;
                 border-radius: 50%;
-                background: ${index === 0 ? '#ff6b35' : 'rgba(255,255,255,0.5)'};
+                background: ${index === 0 ? '#D4A574' : 'rgba(139, 157, 195, 0.3)'};
                 cursor: pointer;
                 transition: all 0.3s ease;
             `;
@@ -383,7 +393,7 @@ class MobileSectionsManager {
             // Update dots
             const dots = dotsContainer.children;
             for (let i = 0; i < dots.length; i++) {
-                dots[i].style.background = i === currentSlide ? '#ff6b35' : 'rgba(255,255,255,0.5)';
+                dots[i].style.background = i === currentSlide ? '#D4A574' : 'rgba(139, 157, 195, 0.3)';
             }
         }
         

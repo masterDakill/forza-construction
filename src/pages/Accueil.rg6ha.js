@@ -1,14 +1,16 @@
 // Page d'accueil optimisée - Forza Construction Inc.
-// Configuration professionnelle avec tracking et conversions + optimisations mobile
+// Configuration professionnelle avec design premium sombre + optimisations mobile
 
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import wixData from 'wix-data';
 import { initMobileOptimizations } from './mobileOptimizations';
 import { initMobileSections } from './mobileSections';
+import { premiumMarketingCopy, conversionContent } from '../content/premiumMarketingCopy';
 
 $w.onReady(function () {
-    // === INITIALISATION ===
+    // === INITIALISATION PREMIUM ===
+    initializePremiumDesign();
     initializeAnalytics();
     setupAnimations();
     setupConversionTracking();
@@ -19,6 +21,166 @@ $w.onReady(function () {
     
     // === SECTIONS MOBILES INTERACTIVES ===
     initMobileSections();
+    
+    // === DESIGN SYSTEM PREMIUM ===
+    function initializePremiumDesign() {
+        // Charger le système de design premium
+        loadPremiumStyles();
+        updateContentWithPremiumCopy();
+        setupPremiumAnimations();
+        
+        console.log('Premium design system initialized');
+    }
+    
+    function loadPremiumStyles() {
+        // Injecter les styles premium dans la page
+        if ($w('#htmlPremiumStyles')) {
+            const premiumStylesLink = `
+                <link rel="stylesheet" href="/src/styles/premiumDesignSystem.css">
+                <style>
+                    /* Page-specific premium overrides */
+                    body {
+                        background: linear-gradient(135deg, #0A0F1C 0%, #1A2332 50%, #2C3E5C 100%);
+                        min-height: 100vh;
+                    }
+                    
+                    .hero-section {
+                        background: linear-gradient(135deg, rgba(10, 15, 28, 0.95) 0%, rgba(26, 35, 50, 0.9) 100%),
+                                   url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(139,157,195,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+                        color: #F8FAFC;
+                        text-align: center;
+                        padding: 4rem 0;
+                        position: relative;
+                        overflow: hidden;
+                    }
+                    
+                    .premium-cta {
+                        background: linear-gradient(135deg, #D4A574 0%, #B5754D 100%);
+                        color: #1A202C;
+                        padding: 1rem 2rem;
+                        border-radius: 12px;
+                        font-weight: 600;
+                        box-shadow: 0 8px 32px rgba(212, 165, 116, 0.2);
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .premium-cta:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 12px 40px rgba(212, 165, 116, 0.3);
+                    }
+                    
+                    .premium-card {
+                        background: #15212E;
+                        border: 1px solid rgba(139, 157, 195, 0.1);
+                        border-radius: 16px;
+                        padding: 2rem;
+                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .premium-card:hover {
+                        transform: translateY(-4px);
+                        border-color: rgba(212, 165, 116, 0.2);
+                        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+                    }
+                    
+                    .text-premium-gold {
+                        color: #D4A574;
+                        font-weight: 600;
+                    }
+                    
+                    .gradient-text {
+                        background: linear-gradient(135deg, #F8FAFC 0%, #D4A574 100%);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        background-clip: text;
+                    }
+                </style>
+            `;
+            $w('#htmlPremiumStyles').html = premiumStylesLink;
+        }
+    }
+    
+    function updateContentWithPremiumCopy() {
+        // Mettre à jour le contenu avec le copy premium
+        const copy = premiumMarketingCopy;
+        
+        // Hero section
+        if ($w('#textHeroTitle')) {
+            $w('#textHeroTitle').text = copy.hero.headline;
+        }
+        
+        if ($w('#textHeroSubtitle')) {
+            $w('#textHeroSubtitle').text = copy.hero.subheadline;
+        }
+        
+        if ($w('#btnDevisGratuit')) {
+            $w('#btnDevisGratuit').label = copy.hero.primaryCTA;
+        }
+        
+        if ($w('#btnVoirRealisations')) {
+            $w('#btnVoirRealisations').label = copy.hero.secondaryCTA;
+        }
+        
+        // Services section
+        if ($w('#textServicesTitle')) {
+            $w('#textServicesTitle').text = copy.services.sectionTitle;
+        }
+        
+        if ($w('#textServicesSubtitle')) {
+            $w('#textServicesSubtitle').text = copy.services.sectionSubtitle;
+        }
+        
+        // CTA section
+        if ($w('#textCtaHeadline')) {
+            $w('#textCtaHeadline').text = copy.cta.primary.headline;
+        }
+        
+        if ($w('#textCtaSubheadline')) {
+            $w('#textCtaSubheadline').text = copy.cta.primary.subheadline;
+        }
+        
+        // Trust indicators
+        const trustIndicators = copy.hero.trustIndicators;
+        trustIndicators.forEach((indicator, index) => {
+            if ($w(`#textTrust${index + 1}`)) {
+                $w(`#textTrust${index + 1}`).text = indicator;
+            }
+        });
+        
+        console.log('Premium content updated');
+    }
+    
+    function setupPremiumAnimations() {
+        // Animations premium sophistiquées
+        const animationSequence = [
+            { element: '#heroSection', delay: 0, animation: 'fadeInUp' },
+            { element: '#servicesSection', delay: 200, animation: 'fadeInLeft' },
+            { element: '#portfolioSection', delay: 400, animation: 'fadeInRight' },
+            { element: '#testimonialsSection', delay: 600, animation: 'fadeInUp' },
+            { element: '#ctaSection', delay: 800, animation: 'fadeInUp' }
+        ];
+        
+        animationSequence.forEach(item => {
+            if ($w(item.element)) {
+                setTimeout(() => {
+                    $w(item.element).show('fade', {
+                        duration: 800,
+                        easing: 'ease-out'
+                    });
+                }, item.delay);
+            }
+        });
+        
+        // Animation parallax pour le hero
+        $w('#page').onScroll = (event) => {
+            const scrollY = event.target.scrollY;
+            if ($w('#heroSection')) {
+                const parallaxSpeed = 0.5;
+                $w('#heroSection').style.transform = `translateY(${scrollY * parallaxSpeed}px)`;
+            }
+        };
+    }
     
     // === CONFIGURATION CONVERSION TRACKING ===
     function setupConversionTracking() {
@@ -188,28 +350,12 @@ $w.onReady(function () {
     
     function startTestimonialRotation() {
         let currentIndex = 0;
-        const testimonials = [
-            {
-                text: "Service exceptionnel! Projet livré à temps et dans le budget.",
-                author: "Marie-Claude L.",
-                rating: 5
-            },
-            {
-                text: "Équipe professionnelle et résultats impeccables.",
-                author: "Jean-François D.",
-                rating: 5
-            },
-            {
-                text: "Je recommande fortement Forza Construction!",
-                author: "Sophie B.",
-                rating: 5
-            }
-        ];
+        const testimonials = premiumMarketingCopy.testimonials.reviews;
         
         setInterval(() => {
             currentIndex = (currentIndex + 1) % testimonials.length;
             updateTestimonial(testimonials[currentIndex]);
-        }, 5000);
+        }, 6000); // Rotation plus lente pour les témoignages premium
     }
     
     // === CHAT WIDGET ===
@@ -281,9 +427,32 @@ $w.onReady(function () {
     }
     
     function updateTestimonial(testimonial) {
-        $w('#textTestimonial').text = testimonial.text;
-        $w('#textAuthor').text = testimonial.author;
-        // Mettre à jour les étoiles
+        if ($w('#textTestimonial')) {
+            $w('#textTestimonial').text = testimonial.content;
+        }
+        
+        if ($w('#textAuthor')) {
+            $w('#textAuthor').text = `${testimonial.name} - ${testimonial.title}`;
+        }
+        
+        if ($w('#textProject')) {
+            $w('#textProject').text = testimonial.project;
+        }
+        
+        // Mettre à jour les étoiles avec animation
+        updateStarRating(testimonial.rating);
+    }
+    
+    function updateStarRating(rating) {
+        for (let i = 1; i <= 5; i++) {
+            if ($w(`#star${i}`)) {
+                $w(`#star${i}`).style.color = i <= rating ? '#D4A574' : '#4A5568';
+                $w(`#star${i}`).style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    $w(`#star${i}`).style.transform = 'scale(1)';
+                }, 100 * i);
+            }
+        }
     }
     
     function openChatWidget() {
@@ -321,9 +490,9 @@ $w.onReady(function () {
                     right: 20px;
                     width: 60px;
                     height: 60px;
-                    background: linear-gradient(135deg, #ff6b35, #f7931e);
+                    background: linear-gradient(135deg, #D4A574, #B5754D);
                     border-radius: 50%;
-                    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
+                    box-shadow: 0 4px 20px rgba(212, 165, 116, 0.4);
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -483,10 +652,20 @@ $w.onReady(function () {
             }
         });
         
-        // Message d'urgence mobile
+        // Message d'urgence mobile avec copy premium
         if ($w('#textMobileUrgency')) {
-            $w('#textMobileUrgency').text = "📱 Appelez maintenant pour un devis GRATUIT!";
+            const urgencyMessages = conversionContent.urgencyMessages;
+            const randomMessage = urgencyMessages[Math.floor(Math.random() * urgencyMessages.length)];
+            $w('#textMobileUrgency').text = randomMessage;
             $w('#textMobileUrgency').show('fade');
+        }
+        
+        // Social proof mobile
+        if ($w('#textMobileSocialProof')) {
+            const socialProofMessages = conversionContent.socialProof;
+            const randomProof = socialProofMessages[Math.floor(Math.random() * socialProofMessages.length)];
+            $w('#textMobileSocialProof').text = randomProof;
+            $w('#textMobileSocialProof').show('fade');
         }
     }
 });
