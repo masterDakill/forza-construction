@@ -4,6 +4,7 @@
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import { initializeScrollOptimization, scrollUtils } from '../utils/scrollOptimization';
+import { navigationHelper, pagesConfig, validatePageElements } from '../config/navigationConfig';
 import { initMobileOptimizations } from './mobileOptimizations.js';
 import { initAdvancedMobileNavigation } from './mobileNavigation.js';
 import { initMobilePerformanceOptimizations } from './mobilePerformance.js';
@@ -35,6 +36,9 @@ $w.onReady(function () {
         // Détection précoce du device
         detectDeviceCapabilities();
         
+        // Valider les éléments de la page
+        validateCurrentPage();
+        
         // Initialiser optimisation du scroll
         initializeScrollOptimization();
         
@@ -43,6 +47,35 @@ $w.onReady(function () {
         
         // Optimisations critiques précoces
         applyCriticalOptimizations();
+    }
+    
+    function validateCurrentPage() {
+        // Détecter la page actuelle et valider ses éléments
+        const currentUrl = wixLocation.url;
+        let pageName = 'homepage';
+        
+        if (currentUrl.includes('/realisations')) {
+            pageName = 'realisations';
+        } else if (currentUrl.includes('/services')) {
+            pageName = 'services';
+        } else if (currentUrl.includes('/a-propos')) {
+            pageName = 'about';
+        } else if (currentUrl.includes('/obtenir-un-devis')) {
+            pageName = 'quote';
+        } else if (currentUrl.includes('/contact')) {
+            pageName = 'contact';
+        }
+        
+        // Valider les éléments requis
+        try {
+            validatePageElements(pageName);
+        } catch (error) {
+            console.warn(`Page validation failed for ${pageName}:`, error);
+        }
+        
+        // Stocker pour utilisation globale
+        window.currentPageName = pageName;
+        console.log(`📄 Current page: ${pageName}`);
     }
     
     function detectDeviceCapabilities() {

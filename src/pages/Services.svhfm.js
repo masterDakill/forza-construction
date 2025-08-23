@@ -13,7 +13,7 @@ $w.onReady(function () {
     setupFilters();
     
     // === CHARGEMENT DES SERVICES ===
-    async function loadServices() {
+    function loadServices() {
         const services = [
             {
                 id: 'renovation',
@@ -219,9 +219,13 @@ $w.onReady(function () {
     }
     
     function saveEstimateData(data) {
-        // Sauvegarder dans session storage pour pré-remplir le formulaire
-        if (wixStorage.session) {
-            wixStorage.session.setItem('estimateData', JSON.stringify(data));
+        // Sauvegarder les données d'estimation
+        try {
+            if (typeof wixStorage !== 'undefined' && wixStorage.session) {
+                wixStorage.session.setItem('estimateData', JSON.stringify(data));
+            }
+        } catch (error) {
+            console.log('Storage not available:', error);
         }
     }
     

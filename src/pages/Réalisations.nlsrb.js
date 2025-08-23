@@ -1,18 +1,21 @@
 // Page Réalisations - Forza Construction Inc.
 // Portfolio interactif avec filtres, galerie et témoignages clients
+// ATTENTION: Cette page doit fonctionner de manière autonome
 
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
-import wixStorage from 'wix-storage';
 
 $w.onReady(function () {
-    // === INITIALISATION ===
+    console.log('📸 Page Réalisations Loading...');
+    
+    // === INITIALISATION SIMPLE ET EFFICACE ===
     initializePortfolio();
     setupFilters();
-    setupGallery();
+    setupProjectGallery();
     setupTestimonials();
-    setupScrollOptimization();
+    
+    console.log('✅ Page Réalisations loaded successfully');
     
     // === DONNÉES PORTFOLIO ===
     const portfolioProjects = [
@@ -291,32 +294,74 @@ $w.onReady(function () {
     }
     
     // === GALERIE INTERACTIVE ===
-    function setupGallery() {
-        // Lightbox pour images
+    function setupProjectGallery() {
+        // Configuration de la galerie de projets
+        console.log('Setting up project gallery...');
+        
+        // S'assurer que les images sont bien affichées
         if ($w('#repeaterPortfolio')) {
-            // Gestion déjà dans onItemReady
+            // La gestion est déjà dans displayProjects() et onItemReady()
+            console.log('Portfolio repeater found and configured');
+        } else {
+            console.warn('Portfolio repeater not found - check Wix element IDs');
         }
     }
     
     function openProjectDetails(project) {
-        // Créer contenu détaillé pour lightbox
-        const detailsData = {
-            title: project.title,
-            longDescription: project.longDescription,
-            features: project.features,
-            images: project.images,
-            testimonial: project.testimonial,
-            specs: {
-                client: project.client,
-                year: project.year,
-                duration: project.duration,
-                budget: project.budget,
-                surface: project.surface
-            }
-        };
+        // Afficher détails du projet de manière simple
+        console.log('Opening project details for:', project.title);
         
+        // Option 1: Utiliser lightbox si disponible
         if (wixWindow.openLightbox) {
-            wixWindow.openLightbox('ProjectDetails', detailsData);
+            const detailsData = {
+                title: project.title,
+                longDescription: project.longDescription,
+                features: project.features,
+                images: project.images,
+                testimonial: project.testimonial,
+                specs: {
+                    client: project.client,
+                    year: project.year,
+                    duration: project.duration,
+                    budget: project.budget,
+                    surface: project.surface
+                }
+            };
+            
+            try {
+                wixWindow.openLightbox('ProjectDetails', detailsData);
+            } catch (error) {
+                console.log('Lightbox not available, using alternative method');
+                showProjectDetailsInline(project);
+            }
+        } else {
+            // Option 2: Affichage inline si pas de lightbox
+            showProjectDetailsInline(project);
+        }
+    }
+    
+    function showProjectDetailsInline(project) {
+        // Afficher les détails dans une section dédiée
+        if ($w('#projectDetailsSection')) {
+            // Remplir les détails
+            if ($w('#textProjectTitle')) {
+                $w('#textProjectTitle').text = project.title;
+            }
+            if ($w('#textProjectDescription')) {
+                $w('#textProjectDescription').text = project.longDescription;
+            }
+            if ($w('#textProjectSpecs')) {
+                $w('#textProjectSpecs').text = `Client: ${project.client} | Durée: ${project.duration} | Budget: ${project.budget}`;
+            }
+            
+            // Afficher la section
+            $w('#projectDetailsSection').show('slide', { duration: 500, direction: 'bottom' });
+            
+            // Scroll vers la section
+            $w('#projectDetailsSection').scrollTo();
+        } else {
+            // Fallback: alert simple
+            alert(`Projet: ${project.title}\n\n${project.longDescription}\n\nBudget: ${project.budget}\nDurée: ${project.duration}`);
         }
     }
     
