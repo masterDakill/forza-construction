@@ -1,18 +1,37 @@
-// Page d'accueil optimisée - Forza Construction Inc.
-// Page d'accueil épurée avec redirection vers pages spécialisées
+// Page d'accueil optimisée PREMIUM - Forza Construction Inc.
+// Design moderne, conversion optimisée et outils professionnels
 
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import wixData from 'wix-data';
 import { initMobileOptimizations } from './mobileOptimizations';
 import { initMobileSections } from './mobileSections';
+import { premiumMarketingCopy, conversionContent } from '../content/premiumMarketingCopy';
+import { modernDesignSystem, designComponents, cssUtilities } from '../styles/modernDesignSystem';
+import { leadManagement, analyticsManager, chatSystem, bookingSystem } from '../utils/professionalTools';
 
 $w.onReady(function () {
-    // === INITIALISATION SIMPLE ET EFFICACE ===
+    // === INITIALISATION PREMIUM ===
+    console.log('🚀 Forza Construction - Homepage Premium Loading...');
+
+    // 1. Initialiser systèmes professionnels
+    initializeProfessionalSystems();
+
+    // 2. Appliquer design moderne
+    applyModernDesign();
+
+    // 3. Configurer page d'accueil optimisée
     initializeHomepage();
+
+    // 4. Setup navigation et interactions
     setupNavigationButtons();
-    setupAnimations();
+    setupAdvancedAnimations();
+
+    // 5. Optimisations mobiles
     setupMobileOptimizations();
+
+    // 6. Systèmes de conversion
+    initializeConversionSystems();
     
     // === CONFIGURATION PAGE D'ACCUEIL ===
     function initializeHomepage() {
@@ -33,21 +52,91 @@ $w.onReady(function () {
         console.log('✅ Homepage optimized and loaded');
     }
     
+    // === NOUVELLES FONCTIONS PREMIUM ===
+
+    function initializeProfessionalSystems() {
+        // 1. Initialiser analytics avancés
+        analyticsManager.trackUserEngagement();
+        analyticsManager.trackPagePerformance();
+
+        // 2. Système de chat professionnel
+        chatSystem.initializeChatWidget();
+
+        // 3. SEO dynamique
+        window.forzaProfessionalTools?.seoOptimization.optimizePageSEO({
+            title: "Forza Construction - Expert en Rénovation Résidentielle au Québec",
+            description: "Spécialiste en rénovation de cuisine, salle de bain et sous-sol. Devis gratuit, garantie 10 ans. Plus de 2,000 projets réalisés.",
+            keywords: "rénovation Québec, cuisine sur mesure, salle de bain, entrepreneur certifié, devis gratuit"
+        });
+
+        console.log('✅ Systèmes professionnels initialisés');
+    }
+
+    function applyModernDesign() {
+        // Injecter le système de design CSS
+        const style = document.createElement('style');
+        style.id = 'forza-modern-design';
+        style.textContent = cssUtilities;
+        document.head.appendChild(style);
+
+        // Appliquer classes modernes aux éléments existants
+        if ($w('#heroSection')) {
+            $w('#heroSection').style.background = 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)';
+            $w('#heroSection').style.position = 'relative';
+            $w('#heroSection').style.overflow = 'hidden';
+        }
+
+        // Améliorer les boutons existants
+        applyModernButtonStyles();
+
+        console.log('✅ Design moderne appliqué');
+    }
+
+    function applyModernButtonStyles() {
+        // Boutons CTA principaux
+        const primaryButtons = $w('Button').filter(btn =>
+            btn.label && (btn.label.includes('DEVIS') || btn.label.includes('CONTACT'))
+        );
+
+        primaryButtons.forEach(button => {
+            button.style = {
+                ...button.style,
+                backgroundColor: '#f97316',
+                borderRadius: '12px',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                padding: '16px 32px',
+                boxShadow: '0 8px 25px rgba(249, 115, 22, 0.3)',
+                transition: 'all 0.3s ease'
+            };
+        });
+    }
+
     function setupHeroSection() {
-        // Titre principal
+        // Contenu héro premium
         if ($w('#textHeroTitle')) {
-            $w('#textHeroTitle').text = "Transformez Votre Maison avec Forza Construction";
+            $w('#textHeroTitle').text = premiumMarketingCopy.hero.headline;
+            $w('#textHeroTitle').style.fontSize = '48px';
+            $w('#textHeroTitle').style.fontWeight = 'bold';
+            $w('#textHeroTitle').style.color = '#ffffff';
+            $w('#textHeroTitle').style.textAlign = 'center';
+            $w('#textHeroTitle').style.marginBottom = '20px';
         }
-        
-        // Sous-titre
+
+        // Sous-titre premium
         if ($w('#textHeroSubtitle')) {
-            $w('#textHeroSubtitle').text = "Experts en rénovation depuis 15 ans • Plus de 2,000 projets réalisés • Garantie 10 ans";
+            $w('#textHeroSubtitle').text = premiumMarketingCopy.hero.subheadline;
+            $w('#textHeroSubtitle').style.fontSize = '20px';
+            $w('#textHeroSubtitle').style.color = '#e5e5e5';
+            $w('#textHeroSubtitle').style.textAlign = 'center';
+            $w('#textHeroSubtitle').style.marginBottom = '30px';
         }
-        
-        // Description
-        if ($w('#textHeroDescription')) {
-            $w('#textHeroDescription').text = "De la cuisine de rêve à l'agrandissement familial, nous donnons vie à vos projets avec excellence.";
-        }
+
+        // Indicateurs de confiance
+        setupTrustIndicators();
+
+        // CTA premium
+        setupPremiumCTA();
         
         // Boutons d'action
         if ($w('#btnDevisGratuit')) {
