@@ -5,7 +5,7 @@ import wixLocation from 'wix-location';
 import wixData from 'wix-data';
 import wixStorage from 'wix-storage';
 import wixWindow from 'wix-window';
-import { initMobileOptimizations } from './mobileOptimizations';
+// import { initMobileOptimizations } from './mobileOptimizations'; // Temporairement désactivé
 import FORZA_DESIGN_GUIDE, { generateGlobalCSS } from '../styles/designGuide';
 import { initForzaSite } from '../utils/siteOrchestrator';
 
@@ -24,7 +24,7 @@ $w.onReady(function () {
     applyFormStyles();
 
     // === OPTIMISATIONS MOBILE ===
-    initMobileOptimizations();
+    // initMobileOptimizations(); // Temporairement désactivé
     setupMobileContactFeatures();
 
     console.log('✅ Contact page optimisée et chargée');
