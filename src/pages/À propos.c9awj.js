@@ -1,17 +1,99 @@
 // Page À Propos - Forza Construction Inc.
-// Histoire de l'entreprise, équipe, valeurs et expertise
+// Histoire de l'entreprise, équipe, valeurs et expertise - VERSION OPTIMISÉE
 
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
+import FORZA_DESIGN_GUIDE, { generateGlobalCSS } from '../styles/designGuide';
+import { initForzaSite } from '../utils/siteOrchestrator';
 
 $w.onReady(function () {
-    // === INITIALISATION ===
+    console.log('🚀 À Propos Page - Optimisation Premium Loading...');
+
+    // === ORCHESTRATEUR ===
+    initForzaSite('about', { enableSEO: true, enableAnalytics: true, enableNavigation: true, enablePerformance: true });
+
+    // === INITIALISATION PREMIUM ===
+    applyModernDesign();
     initializeAboutPage();
     setupTeamSection();
     setupTimelineAnimation();
     setupStatsAnimation();
     setupScrollOptimization();
+
+    console.log('✅ À Propos page optimisée et chargée');
+
+    // === DESIGN MODERNE ===
+    function applyModernDesign() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Injecter CSS global
+        const style = document.createElement('style');
+        style.id = 'forza-about-design';
+        style.textContent = generateGlobalCSS();
+        document.head.appendChild(style);
+
+        // Hero Section - À Propos
+        if ($w('#heroAbout')) {
+            $w('#heroAbout').style = {
+                background: FORZA_DESIGN_GUIDE.colors.secondary.gradient,
+                padding: isMobile ?
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`,
+                textAlign: 'center'
+            };
+        }
+
+        // Titre principal
+        if ($w('#titleAboutPage')) {
+            $w('#titleAboutPage').text = isMobile ?
+                "Notre Histoire" :
+                "Forza Construction: 15 Ans d'Excellence et d'Innovation";
+            $w('#titleAboutPage').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.bold,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                lineHeight: FORZA_DESIGN_GUIDE.typography.lineHeight.tight,
+                marginBottom: FORZA_DESIGN_GUIDE.spacing.lg
+            };
+        }
+
+        // Sous-titre
+        if ($w('#subtitleAboutPage')) {
+            $w('#subtitleAboutPage').text = isMobile ?
+                "Passion • Qualité • Confiance" :
+                "Bâtir l'avenir du Québec, un projet à la fois • Fondée en 2009 • Plus de 2000 projets réalisés";
+            $w('#subtitleAboutPage').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.body :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h5,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.gray[300],
+                lineHeight: FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed
+            };
+        }
+
+        // Section Mission/Vision
+        if ($w('#missionSection')) {
+            $w('#missionSection').style = {
+                background: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                padding: isMobile ?
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`
+            };
+        }
+
+        // Stats Cards
+        if ($w('#statsSection')) {
+            $w('#statsSection').style = {
+                background: FORZA_DESIGN_GUIDE.colors.neutral.gray[50],
+                padding: isMobile ?
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`
+            };
+        }
+    }
     
     // === DONNÉES ENTREPRISE ===
     const companyInfo = {
@@ -159,22 +241,65 @@ $w.onReady(function () {
     }
     
     function updateCompanyStats() {
-        // Stats avec animation
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Stats avec animation et style premium
         if ($w('#statProjectsCompleted')) {
             animateNumber($w('#statProjectsCompleted'), companyInfo.projectsCompleted, '+');
+            $w('#statProjectsCompleted').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.extrabold,
+                color: FORZA_DESIGN_GUIDE.colors.primary.main
+            };
         }
-        
+
         if ($w('#statClientSatisfaction')) {
             animateNumber($w('#statClientSatisfaction'), companyInfo.clientSatisfaction, '%');
+            $w('#statClientSatisfaction').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.extrabold,
+                color: FORZA_DESIGN_GUIDE.colors.status.success
+            };
         }
-        
+
         if ($w('#statYearsExperience')) {
             animateNumber($w('#statYearsExperience'), companyInfo.yearsExperience, ' ans');
+            $w('#statYearsExperience').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.extrabold,
+                color: FORZA_DESIGN_GUIDE.colors.secondary.main
+            };
         }
-        
+
         if ($w('#statTeamSize')) {
             animateNumber($w('#statTeamSize'), companyInfo.employees, ' experts');
+            $w('#statTeamSize').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.extrabold,
+                color: FORZA_DESIGN_GUIDE.colors.primary.main
+            };
         }
+
+        // Labels des stats
+        const statLabels = ['#labelProjects', '#labelSatisfaction', '#labelYears', '#labelTeam'];
+        statLabels.forEach(labelId => {
+            if ($w(labelId)) {
+                $w(labelId).style = {
+                    fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.small,
+                    color: FORZA_DESIGN_GUIDE.colors.neutral.gray[600],
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px'
+                };
+            }
+        });
     }
     
     function setupMissionSection() {

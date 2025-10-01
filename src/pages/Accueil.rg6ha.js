@@ -1,5 +1,5 @@
-// Page d'accueil optimisée PREMIUM - Forza Construction Inc.
-// Design moderne, conversion optimisée et outils professionnels
+// Page d'accueil ULTRA-OPTIMISÉE - Forza Construction Inc.
+// Design moderne, conversion maximale, esthétique professionnelle
 
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
@@ -9,10 +9,21 @@ import { initMobileSections } from './mobileSections';
 import { premiumMarketingCopy, conversionContent } from '../content/premiumMarketingCopy';
 import { modernDesignSystem, designComponents, cssUtilities } from '../styles/modernDesignSystem';
 import { leadManagement, analyticsManager, chatSystem, bookingSystem } from '../utils/professionalTools';
+import FORZA_DESIGN_GUIDE, { generateGlobalCSS } from '../styles/designGuide';
+import { initForzaSite } from '../utils/siteOrchestrator';
 
 $w.onReady(function () {
     // === INITIALISATION PREMIUM ===
     console.log('🚀 Forza Construction - Homepage Premium Loading...');
+
+    // 0. Initialiser orchestrateur (SEO, Analytics, Navigation, Performance)
+    initForzaSite('home', {
+        enableSEO: true,
+        enableAnalytics: true,
+        enableNavigation: true,
+        enablePerformance: true,
+        debug: false
+    });
 
     // 1. Initialiser systèmes professionnels
     initializeProfessionalSystems();
@@ -73,78 +84,181 @@ $w.onReady(function () {
     }
 
     function applyModernDesign() {
-        // Injecter le système de design CSS
+        // Injecter le système de design CSS COMPLET
         const style = document.createElement('style');
-        style.id = 'forza-modern-design';
-        style.textContent = cssUtilities;
+        style.id = 'forza-ultra-design';
+        style.textContent = generateGlobalCSS();
         document.head.appendChild(style);
 
-        // Appliquer classes modernes aux éléments existants
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Hero Section - Design Premium
         if ($w('#heroSection')) {
-            $w('#heroSection').style.background = 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)';
+            $w('#heroSection').style.background = FORZA_DESIGN_GUIDE.colors.secondary.gradient;
+            $w('#heroSection').style.padding = isMobile ?
+                `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`;
             $w('#heroSection').style.position = 'relative';
             $w('#heroSection').style.overflow = 'hidden';
         }
 
-        // Améliorer les boutons existants
+        // Titre Hero - Taille optimale
+        if ($w('#textHeroTitle')) {
+            $w('#textHeroTitle').style.fontSize = isMobile ?
+                FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1;
+            $w('#textHeroTitle').style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.bold;
+            $w('#textHeroTitle').style.lineHeight = FORZA_DESIGN_GUIDE.typography.lineHeight.tight;
+            $w('#textHeroTitle').style.color = FORZA_DESIGN_GUIDE.colors.neutral.white;
+            $w('#textHeroTitle').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.lg;
+        }
+
+        // Sous-titre Hero
+        if ($w('#textHeroSubtitle')) {
+            $w('#textHeroSubtitle').style.fontSize = isMobile ?
+                FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h4 :
+                FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h4;
+            $w('#textHeroSubtitle').style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.medium;
+            $w('#textHeroSubtitle').style.color = FORZA_DESIGN_GUIDE.colors.neutral.gray[200];
+            $w('#textHeroSubtitle').style.lineHeight = FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed;
+            $w('#textHeroSubtitle').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.xl;
+        }
+
+        // Améliorer TOUS les boutons avec le nouveau design
         applyModernButtonStyles();
 
-        console.log('✅ Design moderne appliqué');
+        // Appliquer le design aux sections
+        applyModernSectionStyles();
+
+        console.log('✅ Design ultra-moderne appliqué avec succès');
+    }
+
+    function applyModernSectionStyles() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+        const sections = ['#servicesSection', '#testimonialsSection', '#statsSection', '#ctaSection'];
+
+        sections.forEach(sectionId => {
+            if ($w(sectionId)) {
+                $w(sectionId).style.padding = isMobile ?
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`;
+            }
+        });
     }
 
     function applyModernButtonStyles() {
-        // Boutons CTA principaux
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Boutons CTA principaux - Style Premium
         const primaryButtons = $w('Button').filter(btn =>
-            btn.label && (btn.label.includes('DEVIS') || btn.label.includes('CONTACT'))
+            btn.label && (btn.label.includes('DEVIS') || btn.label.includes('CONTACT') || btn.label.includes('GRATUIT'))
         );
 
         primaryButtons.forEach(button => {
-            button.style = {
-                ...button.style,
-                backgroundColor: '#f97316',
-                borderRadius: '12px',
-                fontWeight: 'bold',
-                fontSize: '16px',
-                padding: '16px 32px',
-                boxShadow: '0 8px 25px rgba(249, 115, 22, 0.3)',
-                transition: 'all 0.3s ease'
-            };
+            button.style.background = FORZA_DESIGN_GUIDE.colors.primary.gradient;
+            button.style.color = FORZA_DESIGN_GUIDE.colors.neutral.white;
+            button.style.borderRadius = FORZA_DESIGN_GUIDE.effects.borderRadius.lg;
+            button.style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.semibold;
+            button.style.fontSize = isMobile ?
+                FORZA_DESIGN_GUIDE.typography.fontSize.mobile.body :
+                FORZA_DESIGN_GUIDE.typography.fontSize.desktop.body;
+            button.style.padding = isMobile ?
+                FORZA_DESIGN_GUIDE.components.button.sizes.medium.padding :
+                FORZA_DESIGN_GUIDE.components.button.sizes.large.padding;
+            button.style.boxShadow = FORZA_DESIGN_GUIDE.effects.boxShadow.primary;
+            button.style.transition = `all ${FORZA_DESIGN_GUIDE.animations.duration.normal} ${FORZA_DESIGN_GUIDE.animations.easing.easeOut}`;
+            button.style.border = 'none';
+            button.style.cursor = 'pointer';
+
+            // Largeur pleine sur mobile
+            if (isMobile) {
+                button.style.width = '100%';
+            }
+        });
+
+        // Boutons secondaires - Style Outline
+        const secondaryButtons = $w('Button').filter(btn =>
+            btn.label && (btn.label.includes('VOIR') || btn.label.includes('PROPOS') || btn.label.includes('PORTFOLIO'))
+        );
+
+        secondaryButtons.forEach(button => {
+            button.style.background = FORZA_DESIGN_GUIDE.colors.neutral.white;
+            button.style.color = FORZA_DESIGN_GUIDE.colors.primary.main;
+            button.style.border = `2px solid ${FORZA_DESIGN_GUIDE.colors.primary.main}`;
+            button.style.borderRadius = FORZA_DESIGN_GUIDE.effects.borderRadius.lg;
+            button.style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.semibold;
+            button.style.padding = isMobile ?
+                FORZA_DESIGN_GUIDE.components.button.sizes.medium.padding :
+                FORZA_DESIGN_GUIDE.components.button.sizes.large.padding;
+            button.style.transition = `all ${FORZA_DESIGN_GUIDE.animations.duration.normal}`;
+
+            if (isMobile) {
+                button.style.width = '100%';
+                button.style.marginTop = FORZA_DESIGN_GUIDE.spacing.sm;
+            }
         });
     }
 
     function setupHeroSection() {
-        // Contenu héro premium
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Titre Hero - Texte optimisé et percutant
         if ($w('#textHeroTitle')) {
-            $w('#textHeroTitle').text = premiumMarketingCopy.hero.headline;
-            $w('#textHeroTitle').style.fontSize = '48px';
-            $w('#textHeroTitle').style.fontWeight = 'bold';
-            $w('#textHeroTitle').style.color = '#ffffff';
+            $w('#textHeroTitle').text = isMobile ?
+                "Rénovation Expert Québec" :
+                "Transformez Votre Maison en Chef-d'Œuvre";
             $w('#textHeroTitle').style.textAlign = 'center';
-            $w('#textHeroTitle').style.marginBottom = '20px';
         }
 
-        // Sous-titre premium
+        // Sous-titre - Proposition de valeur claire
         if ($w('#textHeroSubtitle')) {
-            $w('#textHeroSubtitle').text = premiumMarketingCopy.hero.subheadline;
-            $w('#textHeroSubtitle').style.fontSize = '20px';
-            $w('#textHeroSubtitle').style.color = '#e5e5e5';
+            $w('#textHeroSubtitle').text = isMobile ?
+                "15 ans d'excellence • 2000+ projets réalisés" :
+                "Experts en rénovation résidentielle depuis 15 ans • Plus de 2,000 projets réalisés avec succès";
             $w('#textHeroSubtitle').style.textAlign = 'center';
-            $w('#textHeroSubtitle').style.marginBottom = '30px';
+        }
+
+        // Description - Bénéfices clairs
+        if ($w('#textHeroDescription')) {
+            $w('#textHeroDescription').text = isMobile ?
+                "Cuisine, salle de bain, agrandissement • Devis gratuit en 24h • Garantie 10 ans" :
+                "Cuisine sur mesure, salle de bain spa, agrandissement, sous-sol • Devis personnalisé gratuit en moins de 24h • Garantie complète 10 ans";
+            $w('#textHeroDescription').style.textAlign = 'center';
+            $w('#textHeroDescription').style.fontSize = isMobile ?
+                FORZA_DESIGN_GUIDE.typography.fontSize.mobile.body :
+                FORZA_DESIGN_GUIDE.typography.fontSize.desktop.lg;
+            $w('#textHeroDescription').style.color = FORZA_DESIGN_GUIDE.colors.neutral.gray[300];
+            $w('#textHeroDescription').style.lineHeight = FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed;
+            $w('#textHeroDescription').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.xl;
         }
 
         // Indicateurs de confiance
         setupTrustIndicators();
 
-        // CTA premium
-        setupPremiumCTA();
-        
-        // Boutons d'action
+        // Boutons d'action - Labels optimisés
         if ($w('#btnDevisGratuit')) {
-            $w('#btnDevisGratuit').label = "DEVIS GRATUIT 24H";
+            $w('#btnDevisGratuit').label = isMobile ?
+                "DEVIS GRATUIT 24H" :
+                "OBTENIR MON DEVIS GRATUIT →";
         }
-        
+
         if ($w('#btnVoirRealisations')) {
-            $w('#btnVoirRealisations').label = "Voir Nos Réalisations";
+            $w('#btnVoirRealisations').label = isMobile ?
+                "Portfolio" :
+                "Voir Nos Réalisations";
+        }
+
+        // Badge d'urgence
+        if ($w('#textUrgencyBadge')) {
+            $w('#textUrgencyBadge').text = "🔥 Disponible maintenant • Réponse en 24h";
+            $w('#textUrgencyBadge').style.background = 'rgba(255, 107, 53, 0.1)';
+            $w('#textUrgencyBadge').style.padding = FORZA_DESIGN_GUIDE.spacing.sm + ' ' + FORZA_DESIGN_GUIDE.spacing.md;
+            $w('#textUrgencyBadge').style.borderRadius = FORZA_DESIGN_GUIDE.effects.borderRadius.full;
+            $w('#textUrgencyBadge').style.color = FORZA_DESIGN_GUIDE.colors.primary.main;
+            $w('#textUrgencyBadge').style.fontSize = FORZA_DESIGN_GUIDE.typography.fontSize.desktop.small;
+            $w('#textUrgencyBadge').style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.semibold;
+            $w('#textUrgencyBadge').style.display = 'inline-block';
+            $w('#textUrgencyBadge').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.lg;
         }
     }
     

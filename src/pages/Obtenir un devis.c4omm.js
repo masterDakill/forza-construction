@@ -1,18 +1,98 @@
 // Page Obtenir un Devis - Forza Construction Inc.
-// Formulaire intelligent avec calcul instantané et workflow automatisé
+// Formulaire intelligent avec calcul instantané et workflow automatisé - VERSION OPTIMISÉE
 
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import wixStorage from 'wix-storage';
+import FORZA_DESIGN_GUIDE, { generateGlobalCSS } from '../styles/designGuide';
+import { initForzaSite } from '../utils/siteOrchestrator';
 
 $w.onReady(function () {
-    // === INITIALISATION ===
+    console.log('🚀 Devis Page - Optimisation Premium Loading...');
+
+    // === ORCHESTRATEUR ===
+    initForzaSite('quote', { enableSEO: true, enableAnalytics: true, enableNavigation: true, enablePerformance: true });
+
+    // === INITIALISATION PREMIUM ===
+    applyModernDesign();
     initializeQuoteForm();
     setupPriceCalculator();
     setupFormValidation();
     setupProgressSteps();
     loadReferenceData();
+
+    console.log('✅ Devis page optimisée et chargée');
+
+    // === DESIGN MODERNE ===
+    function applyModernDesign() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Injecter CSS global
+        const style = document.createElement('style');
+        style.id = 'forza-devis-design';
+        style.textContent = generateGlobalCSS();
+        document.head.appendChild(style);
+
+        // Hero Section - Devis
+        if ($w('#heroDevis')) {
+            $w('#heroDevis').style = {
+                background: FORZA_DESIGN_GUIDE.colors.secondary.gradient,
+                padding: isMobile ?
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`,
+                textAlign: 'center'
+            };
+        }
+
+        // Titre principal
+        if ($w('#titleDevisPage')) {
+            $w('#titleDevisPage').text = isMobile ?
+                "Devis Gratuit 24h" :
+                "Obtenez Votre Devis Gratuit en Moins de 3 Minutes";
+            $w('#titleDevisPage').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.bold,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                lineHeight: FORZA_DESIGN_GUIDE.typography.lineHeight.tight,
+                marginBottom: FORZA_DESIGN_GUIDE.spacing.lg
+            };
+        }
+
+        // Sous-titre
+        if ($w('#subtitleDevisPage')) {
+            $w('#subtitleDevisPage').text = isMobile ?
+                "Simple • Rapide • Sans engagement" :
+                "Formulaire intelligent • Estimation instantanée • Réponse détaillée en 24h • 100% gratuit et sans engagement";
+            $w('#subtitleDevisPage').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.body :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h5,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.gray[300],
+                lineHeight: FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed
+            };
+        }
+
+        // Barre de progression
+        if ($w('#progressBar')) {
+            $w('#progressBar').style = {
+                background: FORZA_DESIGN_GUIDE.colors.neutral.gray[200],
+                height: '8px',
+                borderRadius: FORZA_DESIGN_GUIDE.effects.borderRadius.full
+            };
+        }
+
+        if ($w('#progressBarFill')) {
+            $w('#progressBarFill').style = {
+                background: FORZA_DESIGN_GUIDE.colors.primary.gradient,
+                height: '100%',
+                borderRadius: FORZA_DESIGN_GUIDE.effects.borderRadius.full,
+                transition: 'width 0.3s ease'
+            };
+        }
+    }
     
     // === DONNÉES DE RÉFÉRENCE ===
     const serviceCategories = {
@@ -112,27 +192,81 @@ $w.onReady(function () {
             $w('#repeaterServices').data = servicesData;
             
             $w('#repeaterServices').onItemReady(($item, service) => {
-                $item('#iconService').text = service.icon;
-                $item('#nameService').text = service.name;
-                $item('#basePriceService').text = `À partir de ${service.basePrice}$/pi²`;
-                
-                $item('#btnSelectService').onClick(() => {
-                    selectService(service.id);
-                    updateProgressBar();
-                    goToStep(2);
-                });
-                
-                // Animation hover
-                $item('#boxService').onMouseIn = () => {
-                    $item('#boxService').style.transform = 'scale(1.02)';
-                    $item('#boxService').style.transition = 'transform 0.2s ease';
-                    $item('#boxService').style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-                };
-                
-                $item('#boxService').onMouseOut = () => {
-                    $item('#boxService').style.transform = 'scale(1)';
-                    $item('#boxService').style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
-                };
+                const isMobile = wixWindow.viewMode === 'mobile';
+
+                // Icône avec style
+                if ($item('#iconService')) {
+                    $item('#iconService').text = service.icon;
+                    $item('#iconService').style = {
+                        fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1
+                    };
+                }
+
+                // Nom du service
+                if ($item('#nameService')) {
+                    $item('#nameService').text = service.name;
+                    $item('#nameService').style = {
+                        fontSize: isMobile ?
+                            FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h4 :
+                            FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h4,
+                        fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.bold,
+                        color: FORZA_DESIGN_GUIDE.colors.secondary.main
+                    };
+                }
+
+                // Prix de base
+                if ($item('#basePriceService')) {
+                    $item('#basePriceService').text = `À partir de ${service.basePrice}$/pi²`;
+                    $item('#basePriceService').style = {
+                        fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.body,
+                        color: FORZA_DESIGN_GUIDE.colors.primary.main,
+                        fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.semibold
+                    };
+                }
+
+                // Bouton sélection avec style premium
+                if ($item('#btnSelectService')) {
+                    $item('#btnSelectService').label = "CHOISIR CE SERVICE";
+                    $item('#btnSelectService').style = {
+                        background: FORZA_DESIGN_GUIDE.colors.primary.gradient,
+                        color: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                        padding: FORZA_DESIGN_GUIDE.components.button.sizes.medium.padding,
+                        borderRadius: FORZA_DESIGN_GUIDE.effects.borderRadius.lg,
+                        boxShadow: FORZA_DESIGN_GUIDE.effects.boxShadow.primary,
+                        fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.semibold,
+                        border: 'none',
+                        cursor: 'pointer',
+                        width: '100%'
+                    };
+                    $item('#btnSelectService').onClick(() => {
+                        selectService(service.id);
+                        updateProgressBar();
+                        goToStep(2);
+                    });
+                }
+
+                // Card avec style moderne
+                if ($item('#boxService')) {
+                    $item('#boxService').style = {
+                        background: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                        padding: FORZA_DESIGN_GUIDE.components.card.padding,
+                        borderRadius: FORZA_DESIGN_GUIDE.components.card.borderRadius,
+                        boxShadow: FORZA_DESIGN_GUIDE.components.card.boxShadow,
+                        transition: 'all 0.3s ease',
+                        cursor: 'pointer'
+                    };
+
+                    // Animation hover
+                    $item('#boxService').onMouseIn = () => {
+                        $item('#boxService').style.transform = 'translateY(-8px)';
+                        $item('#boxService').style.boxShadow = FORZA_DESIGN_GUIDE.effects.boxShadow.xl;
+                    };
+
+                    $item('#boxService').onMouseOut = () => {
+                        $item('#boxService').style.transform = 'translateY(0)';
+                        $item('#boxService').style.boxShadow = FORZA_DESIGN_GUIDE.effects.boxShadow.lg;
+                    };
+                }
             });
         }
     }
