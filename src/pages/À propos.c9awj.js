@@ -314,7 +314,7 @@ $w.onReady(function () {
                 },
                 {
                     title: "Transparence", 
-                    description: "Communication claire, prix justes, pas de surprises - vous savez toujours où vous en êtes.",
+                    description: "Communication claire, prix justes, pas de surprises - vous savez toujours ou vous en etes.",
                     icon: "👁️"
                 },
                 {
