@@ -208,216 +208,228 @@ $w.onReady(function () {
   }
 
   function calculateEstimate() {
-    if (!currentQuote.serviceType || !currentQuote.surface) {
-      updatePriceDisplay(0);
-      return;
-    }
-
-    const service = serviceCategories[currentQuote.serviceType];
-    let basePrice = service.basePrice * currentQuote.surface;
-
-    currentQuote.options.forEach((optionId) => {
-      const option = service.options.find((opt) => opt.id === optionId);
-      if (option) basePrice *= option.multiplier;
-    });
-
-    const urgencyMultiplier = urgencyLevels[currentQuote.urgency].multiplier;
-    const finalPrice = basePrice * urgencyMultiplier;
-
-    currentQuote.estimatedPrice = Math.round(finalPrice);
-    updatePriceDisplay(currentQuote.estimatedPrice);
-    showCalculationDetails();
+  if (!currentQuote.serviceType || !currentQuote.surface) {
+    updatePriceDisplay(0);
+    return;
   }
 
-  function updatePriceDisplay(price) {
-    if ($w('#textEstimatedPrice')) {
-      const formattedPrice = new Intl.NumberFormat('fr-CA', {
-        style: 'currency',
-        currency: 'CAD'
-      }).format(price);
+  const service = serviceCategories[currentQuote.serviceType];
+  let basePrice = service.basePrice * currentQuote.surface;
 
-      $w('#textEstimatedPrice').text = formattedPrice;
-
-      if ($w('#textEstimatedPrice')?.style) {
-        $w('#textEstimatedPrice').style.transform = 'scale(1.1)';
-        setTimeout(() => {
-          $w('#textEstimatedPrice').style.transform = 'scale(1)';
-        }, 200);
-      }
+  // Appliquer les options
+  currentQuote.options.forEach((optionId) => {
+    const option = service.options.find((opt) => opt.id === optionId);
+    if (option) {
+      basePrice *= option.multiplier;
     }
+  });
 
-    if ($w('#btnGetDetailedQuote')) {
-      if (price > 0) {
-        $w('#btnGetDetailedQuote').label = `Obtenir un devis détaillé pour ${new Intl.NumberFormat('fr-CA', {
+  // Appliquer l'urgence
+  const urgencyMultiplier = urgencyLevels[currentQuote.urgency].multiplier;
+  const finalPrice = basePrice * urgencyMultiplier;
+
+  currentQuote.estimatedPrice = Math.round(finalPrice);
+  updatePriceDisplay(currentQuote.estimatedPrice);
+
+  // Afficher détails du calcul
+  showCalculationDetails();
+}
+
+function updatePriceDisplay(price) {
+  if ($w('#textEstimatedPrice')) {
+    const formattedPrice = new Intl.NumberFormat('fr-CA', {
+      style: 'currency',
+      currency: 'CAD'
+    }).format(price);
+
+    $w('#textEstimatedPrice').text = formattedPrice;
+
+    // Animation du prix (si style dispo)
+    if ($w('#textEstimatedPrice')?.style) {
+      $w('#textEstimatedPrice').style.transform = 'scale(1.1)';
+      setTimeout(() => {
+        $w('#textEstimatedPrice').style.transform = 'scale(1)';
+      }, 200);
+    }
+  }
+
+  // Mise à jour du bouton CTA
+  if ($w('#btnGetDetailedQuote')) {
+    if (price > 0) {
+      $w('#btnGetDetailedQuote').label =
+        `Obtenir un devis détaillé pour ${new Intl.NumberFormat('fr-CA', {
           style: 'currency',
           currency: 'CAD'
         }).format(price)}`;
-        $w('#btnGetDetailedQuote').enable();
-      } else {
-        $w('#btnGetDetailedQuote').label = 'Complétez les informations';
-        $w('#btnGetDetailedQuote').disable();
-      }
+      $w('#btnGetDetailedQuote').enable();
+    } else {
+      $w('#btnGetDetailedQuote').label = 'Complétez les informations';
+      $w('#btnGetDetailedQuote').disable();
     }
   }
+}
 
-  function showCalculationDetails() {
-    if (!$w('#boxCalculationDetails')) return;
+function showCalculationDetails() {
+  if (!$w('#boxCalculationDetails')) return;
 
-    const service = serviceCategories[currentQuote.serviceType];
-    let detailsHTML = `
-      <div style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin: 10px 0;">
-        <h4>Détails du calcul:</h4>
-        <p><strong>Service:</strong> ${service.name}</p>
-        <p><strong>Surface:</strong> ${currentQuote.surface} pi²</p>
-        <p><strong>Prix de base:</strong> ${service.basePrice}$/pi² = ${new Intl.NumberFormat('fr-CA', {
-          style: 'currency',
-          currency: 'CAD'
-        }).format(service.basePrice * currentQuote.surface)}</p>
-    `;
+  const service = serviceCategories[currentQuote.serviceType];
+  let detailsHTML = `
+    <div style="padding: 15px; background: #f8f9fa; border-radius: 8px; margin: 10px 0;">
+      <h4>Détails du calcul:</h4>
+      <p><strong>Service:</strong> ${service.name}</p>
+      <p><strong>Surface:</strong> ${currentQuote.surface} pi²</p>
+      <p><strong>Prix de base:</strong> ${service.basePrice}$/pi² = ${new Intl.NumberFormat('fr-CA', {
+        style: 'currency',
+        currency: 'CAD'
+      }).format(service.basePrice * currentQuote.surface)}</p>
+  `;
 
-    if (currentQuote.options.length > 0) {
-      detailsHTML += '<p><strong>Options sélectionnées:</strong></p><ul>';
-      currentQuote.options.forEach((optionId) => {
-        const option = service.options.find((opt) => opt.id === optionId);
-        if (option) {
-          detailsHTML += `<li>${option.name} (+${Math.round((option.multiplier - 1) * 100)}%)</li>`;
-        }
-      });
-      detailsHTML += '</ul>';
-    }
-
-    detailsHTML += `
-        <p><strong>Urgence:</strong> ${urgencyLevels[currentQuote.urgency].name}</p>
-        <hr>
-        <p><strong>Estimation totale:</strong> ${new Intl.NumberFormat('fr-CA', {
-          style: 'currency',
-          currency: 'CAD'
-        }).format(currentQuote.estimatedPrice)}</p>
-        <small>* Prix approximatif. Un devis détaillé sera fourni après évaluation sur place.</small>
-      </div>
-    `;
-
-    if ($w('#htmlCalculationDetails')) {
-      $w('#htmlCalculationDetails').html = detailsHTML;
-    }
-  }
-
-  // === GESTION DES ÉTAPES ===
-  function setupProgressSteps() {
-    const steps = [
-      { number: 1, title: 'Type de projet', icon: '🏗️' },
-      { number: 2, title: 'Détails & Options', icon: '⚙️' },
-      { number: 3, title: 'Informations contact', icon: '📝' },
-      { number: 4, title: 'Confirmation', icon: '✅' }
-    ];
-
-    if ($w('#repeaterSteps')) {
-      $w('#repeaterSteps').data = steps;
-
-      $w('#repeaterSteps').onItemReady(($item, step) => {
-        $item('#numberStep').text = step.number;
-        $item('#iconStep').text = step.icon;
-        $item('#titleStep').text = step.title;
-
-        if ($item('#boxStep')?.style) {
-          if (step.number === currentQuote.step) {
-            $item('#boxStep').style.backgroundColor = '#007bff';
-            $item('#boxStep').style.color = '#ffffff';
-          } else if (step.number < currentQuote.step) {
-            $item('#boxStep').style.backgroundColor = '#28a745';
-            $item('#boxStep').style.color = '#ffffff';
-          } else {
-            $item('#boxStep').style.backgroundColor = '#e9ecef';
-            $item('#boxStep').style.color = '#6c757d';
-          }
-        }
-      });
-    }
-  }
-
-  function goToStep(stepNumber) {
-    currentQuote.step = stepNumber;
-    updateProgressBar();
-    showStep(stepNumber);
-    if ($w('#page')?.scrollTo) $w('#page').scrollTo();
-  }
-
-  function showStep(stepNumber) {
-    const sections = ['#sectionStep1', '#sectionStep2', '#sectionStep3', '#sectionStep4'];
-    sections.forEach((section) => {
-      if ($w(section)?.hide) $w(section).hide();
-    });
-
-    if ($w(`#sectionStep${stepNumber}`)?.show) {
-      $w(`#sectionStep${stepNumber}`).show('fade', { duration: 500 });
-    }
-  }
-
-  function updateProgressBar() {
-    const progressPercent = (currentQuote.step - 1) * 33.33;
-
-    if ($w('#barProgress')?.style) {
-      $w('#barProgress').style.width = `${progressPercent}%`;
-    }
-
-    if ($w('#textProgressPercent')) {
-      $w('#textProgressPercent').text = `${Math.round(progressPercent)}% complété`;
-    }
-
-    setupProgressSteps();
-  }
-
-  // === VALIDATION FORMULAIRE ===
-  function setupFormValidation() {
-    const requiredFields = [
-      { id: '#inputName', name: 'Nom' },
-      { id: '#inputEmail', name: 'Email' },
-      { id: '#inputPhone', name: 'Téléphone' },
-      { id: '#inputAddress', name: 'Adresse' }
-    ];
-
-    requiredFields.forEach((field) => {
-      if ($w(field.id)) {
-        $w(field.id).onBlur(() => {
-          validateField(field.id, field.name);
-        });
+  if (currentQuote.options.length > 0) {
+    detailsHTML += '<p><strong>Options sélectionnées:</strong></p><ul>';
+    currentQuote.options.forEach((optionId) => {
+      const option = service.options.find((opt) => opt.id === optionId);
+      if (option) {
+        detailsHTML += `<li>${option.name} (+${Math.round((option.multiplier - 1) * 100)}%)</li>`;
       }
     });
+    detailsHTML += '</ul>';
+  }
 
-    if ($w('#inputEmail')) {
-      $w('#inputEmail').onBlur(() => {
-        validateEmail($w('#inputEmail').value);
+  detailsHTML += `
+      <p><strong>Urgence:</strong> ${urgencyLevels[currentQuote.urgency].name}</p>
+      <hr>
+      <p><strong>Estimation totale:</strong> ${new Intl.NumberFormat('fr-CA', {
+        style: 'currency',
+        currency: 'CAD'
+      }).format(currentQuote.estimatedPrice)}</p>
+      <small>* Prix approximatif. Un devis détaillé sera fourni après évaluation sur place.</small>
+    </div>
+  `;
+
+  if ($w('#htmlCalculationDetails')) {
+    $w('#htmlCalculationDetails').html = detailsHTML;
+  }
+}
+
+// === GESTION DES ÉTAPES ===
+function setupProgressSteps() {
+  const steps = [
+    { number: 1, title: 'Type de projet', icon: '🏗️' },
+    { number: 2, title: 'Détails & Options', icon: '⚙️' },
+    { number: 3, title: 'Informations contact', icon: '📝' },
+    { number: 4, title: 'Confirmation', icon: '✅' }
+  ];
+
+  if ($w('#repeaterSteps')) {
+    $w('#repeaterSteps').data = steps;
+
+    $w('#repeaterSteps').onItemReady(($item, step) => {
+      $item('#numberStep').text = step.number;
+      $item('#iconStep').text = step.icon;
+      $item('#titleStep').text = step.title;
+
+      if ($item('#boxStep')?.style) {
+        if (step.number === currentQuote.step) {
+          $item('#boxStep').style.backgroundColor = '#007bff';
+          $item('#boxStep').style.color = '#ffffff';
+        } else if (step.number < currentQuote.step) {
+          $item('#boxStep').style.backgroundColor = '#28a745';
+          $item('#boxStep').style.color = '#ffffff';
+        } else {
+          $item('#boxStep').style.backgroundColor = '#e9ecef';
+          $item('#boxStep').style.color = '#6c757d';
+        }
+      }
+    });
+  }
+}
+
+function goToStep(stepNumber) {
+  currentQuote.step = stepNumber;
+  updateProgressBar();
+  showStep(stepNumber);
+
+  // Scroll vers le haut (si dispo)
+  if ($w('#page')?.scrollTo) $w('#page').scrollTo();
+}
+
+function showStep(stepNumber) {
+  const sections = ['#sectionStep1', '#sectionStep2', '#sectionStep3', '#sectionStep4'];
+  sections.forEach((section) => {
+    if ($w(section)?.hide) $w(section).hide();
+  });
+
+  if ($w(`#sectionStep${stepNumber}`)?.show) {
+    $w(`#sectionStep${stepNumber}`).show('fade', { duration: 500 });
+  }
+}
+
+function updateProgressBar() {
+  const progressPercent = (currentQuote.step - 1) * 33.33;
+
+  if ($w('#barProgress')?.style) {
+    $w('#barProgress').style.width = `${progressPercent}%`;
+  }
+  if ($w('#textProgressPercent')) {
+    $w('#textProgressPercent').text = `${Math.round(progressPercent)}% complété`;
+  }
+
+  setupProgressSteps(); // Réactualiser les étapes
+}
+
+// === VALIDATION FORMULAIRE ===
+function setupFormValidation() {
+  const requiredFields = [
+    { id: '#inputName', name: 'Nom' },
+    { id: '#inputEmail', name: 'Email' },
+    { id: '#inputPhone', name: 'Téléphone' },
+    { id: '#inputAddress', name: 'Adresse' }
+  ];
+
+  requiredFields.forEach((field) => {
+    if ($w(field.id)) {
+      $w(field.id).onBlur(() => {
+        validateField(field.id, field.name);
       });
     }
+  });
 
-    if ($w('#inputPhone')) {
-      $w('#inputPhone').onBlur(() => {
-        validatePhone($w('#inputPhone').value);
-      });
-    }
+  if ($w('#inputEmail')) {
+    $w('#inputEmail').onBlur(() => {
+      validateEmail($w('#inputEmail').value);
+    });
   }
 
-  function validateField(fieldId, fieldName) {
-    const value = $w(fieldId).value.trim();
-    if (!value) {
-      showFieldError(fieldId, `${fieldName} est requis`);
-      return false;
-    } else {
-      showFieldSuccess(fieldId);
-      return true;
-    }
+  if ($w('#inputPhone')) {
+    $w('#inputPhone').onBlur(() => {
+      validatePhone($w('#inputPhone').value);
+    });
   }
+}
 
-  function validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      showFieldError('#inputEmail', 'Email invalide');
-      return false;
-    } else {
-      showFieldSuccess('#inputEmail');
-      return true;
-    }
+function validateField(fieldId, fieldName) {
+  const value = $w(fieldId).value.trim();
+
+  if (!value) {
+    showFieldError(fieldId, `${fieldName} est requis`);
+    return false;
+  } else {
+    showFieldSuccess(fieldId);
+    return true;
   }
+}
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+    showFieldError('#inputEmail', 'Email invalide');
+    return false;
+  } else {
+    showFieldSuccess('#inputEmail');
+    return true;
+  }
+}
 
   function validatePhone(phone) {
     const phoneRegex = /^[\d\s\-\(\)\+]+$/;
