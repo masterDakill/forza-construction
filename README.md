@@ -53,6 +53,7 @@ Use the dedicated checklist to confirm that this repository is linked to the cor
 3. ✅ **Sync and test locally** – run `wix pull` (if you need Wix-side changes) and `wix dev` to preview the site locally.
 4. ✅ **Run quality gates** – execute `npm run lint` before committing to keep the code compatible with Wix' runtime.
 5. ✅ **Commit & push via branch** – work from `codex/<feature>-<date>` branches and open a PR once checks pass.
+6. ✅ **Tester le message de confirmation** – soumettre un devis test et vérifier que le message "Merci <Nom>" affiche bien le nom saisi.
 
 For a bilingual, step-by-step guide covering troubleshooting and security tips, read [`docs/SITE_VALIDATION_GUIDE.md`](docs/SITE_VALIDATION_GUIDE.md).
 

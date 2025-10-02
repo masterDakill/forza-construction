@@ -575,7 +575,10 @@ $w.onReady(function () {
             timestamp: new Date().toISOString(),
             source: 'Website Form'
         };
-        
+
+        // Garder l'état local synchronisé pour l'écran de confirmation
+        currentQuote.clientInfo = { ...quoteData.clientInfo };
+
         // Afficher loader
         showSubmissionLoader();
         
