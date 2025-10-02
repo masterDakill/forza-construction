@@ -70,3 +70,5 @@ Keep a terminal open in the project root and follow the bilingual workflow cheat
 5. 🚀 **Launch the local editor / Démarrer l'éditeur local** – run `wix dev` from the repo root to validate UI/UX before pushing.
 
 The detailed checklist lives in [`docs/LOCAL_DEV_WORKFLOW.md`](docs/LOCAL_DEV_WORKFLOW.md) for quick copy/paste access.
+
+**Verification log / Journal de vérification.** Consultez [`docs/VERIFICATION_LOG_2025-10-02.md`](docs/VERIFICATION_LOG_2025-10-02.md) pour suivre les contrôles automatisés exécutés (ex. `npm run lint`) et planifier les validations manuelles restantes avant publication.

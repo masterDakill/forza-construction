@@ -1,5 +1,9 @@
 # Changelog
 
+## [2025-10-02] Verification log & workflow quickstart
+- Captured the latest lint execution in `docs/VERIFICATION_LOG_2025-10-02.md` to provide a traceable verification history.
+- Linked the README quickstart to the verification log so contributors can review completed checks before editing Wix pages.
+
 ## [2025-10-02] Local workflow quickstart doc
 - Added `docs/LOCAL_DEV_WORKFLOW.md` with bilingual terminal commands covering Wix CLI login, `gh pr checkout`, and branch conventions.
 - Extended the README with a bilingual quickstart section pointing to the new workflow cheat sheet.
