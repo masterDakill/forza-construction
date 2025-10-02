@@ -79,36 +79,47 @@ $w.onReady(function () {
         console.log(`📄 Current page: ${pageName}`);
     }
     
-    function detectDeviceCapabilities() {
-        // Détection avancée des capacités device
-        const capabilities = {
-            isMobile: wixWindow.viewMode === 'mobile',
-            isTablet: wixWindow.viewMode === 'tablet',
-            isDesktop: wixWindow.viewMode === 'desktop',
-            touchSupport: 'ontouchstart' in window,
-            retina: window.devicePixelRatio > 1,
-            webGL: !!window.WebGLRenderingContext,
-            webP: checkWebPSupport(),
-            serviceWorker: 'serviceWorker' in navigator,
-            geolocation: 'geolocation' in navigator,
-            battery: 'getBattery' in navigator,
-            connection: 'connection' in navigator
-        };
-        
-        // Stocker globalement
-        window.deviceCapabilities = capabilities;
-        
-        console.log('📱 Device capabilities:', capabilities);
-        
-        // Appliquer optimisations selon capacités
-        if (capabilities.isMobile) {
-            document.body.classList.add('mobile-device');
-        }
-        
-        if (capabilities.retina) {
-            document.body.classList.add('retina-display');
-        }
-    }
+   function detectDeviceCapabilities() {
+  // 👉 La seule source fiable côté Wix pour le type d’appareil
+  const formFactor = wixWindow.formFactor; // 'Desktop' | 'Tablet' | 'Mobile'
+
+  // Heuristiques complémentaires (sécurisées côté navigateur)
+  const hasTouch =
+    typeof window !== 'undefined' &&
+    ('ontouchstart' in window ||
+      (navigator && (navigator.maxTouchPoints || navigator.msMaxTouchPoints) > 0));
+
+  const prefersReducedMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const capabilities = {
+    formFactor,                         // ← garde la valeur brute pour l’analytics
+    isMobile: formFactor === 'Mobile',
+    isTablet: formFactor === 'Tablet',
+    isDesktop: formFactor === 'Desktop',
+    touchSupport: hasTouch,
+    retina: (typeof window !== 'undefined') && window.devicePixelRatio > 1,
+    webGL: (typeof window !== 'undefined') && !!window.WebGLRenderingContext,
+    webP: checkWebPSupport(),
+    prefersReducedMotion,
+    serviceWorker: (typeof navigator !== 'undefined') && 'serviceWorker' in navigator,
+    geolocation: (typeof navigator !== 'undefined') && 'geolocation' in navigator,
+    battery: (typeof navigator !== 'undefined') && 'getBattery' in navigator,
+    connection: (typeof navigator !== 'undefined') && 'connection' in navigator
+  };
+
+  // Expose global
+  window.deviceCapabilities = capabilities;
+
+  // Classes utilitaires pour le CSS
+  document.body.classList.toggle('mobile-device', capabilities.isMobile);
+  document.body.classList.toggle('retina-display', capabilities.retina);
+
+  console.log('📱 Device capabilities:', capabilities);
+  return capabilities;
+}
     
     function checkWebPSupport() {
         const canvas = document.createElement('canvas');
@@ -358,7 +369,7 @@ $w.onReady(function () {
     function initializeMobileEnhancements() {
         // Initialiser les systèmes mobiles dans l'ordre optimal
         
-        if (window.deviceCapabilities?.isMobile) {
+        if (window.deviceCapabilities?.isMobile || wixWindow.formFactor === 'Mobile') {
             console.log('📱 Initializing mobile enhancements...');
             
             // 1. Optimisations de base (synchrone)
@@ -465,15 +476,15 @@ $w.onReady(function () {
         }
     }
     
-    function setupGlobalAnalytics() {
-        // Configuration analytics globale
-        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-            // Tracking device info
-            window.gtag('event', 'page_view', {
-                'device_type': window.deviceCapabilities?.isMobile ? 'mobile' : 'desktop'
-            });
-        }
-    }
+   function setupGlobalAnalytics() {
+  if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+    const caps = window.deviceCapabilities || detectDeviceCapabilities();
+    // Normalise en minuscules pour GA4
+    const device_type = (caps.formFactor || 'Desktop').toLowerCase(); // 'mobile' | 'tablet' | 'desktop'
+
+    window.gtag('event', 'page_view', { device_type });
+  }
+}
     
     function setupCommonFeatures() {
         // Fonctionnalités communes à toutes les pages
