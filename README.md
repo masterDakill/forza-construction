@@ -43,3 +43,17 @@ Learn more about [working with the Wix CLI](https://support.wix.com/en/article/v
 
 ## Invite contributors to work with you
 Git Integration & Wix CLI extends Editor X's [concurrent editing](https://support.wix.com/en/article/editor-x-about-concurrent-editing) capabilities. Invite other developers as collaborators on your [site](https://support.wix.com/en/article/inviting-people-to-contribute-to-your-site) and your [GitHub repo](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-access-to-your-personal-repositories/inviting-collaborators-to-a-personal-repository). Multiple developers can work on a site's code at once.
+
+## Validate the Construction Forza site connection / Valider la connexion du site Construction Forza
+
+Use the dedicated checklist to confirm that this repository is linked to the correct Wix site before editing in Git:
+
+1. ✅ **Check `wix.config.json`** – confirm the `siteId` matches the Construction Forza property in Wix.
+2. ✅ **Authenticate with Wix CLI** – run `wix login` followed by `wix status` to make sure the CLI is bound to the same site.
+3. ✅ **Sync and test locally** – run `wix pull` (if you need Wix-side changes) and `wix dev` to preview the site locally.
+4. ✅ **Run quality gates** – execute `npm run lint` before committing to keep the code compatible with Wix' runtime.
+5. ✅ **Commit & push via branch** – work from `codex/<feature>-<date>` branches and open a PR once checks pass.
+
+For a bilingual, step-by-step guide covering troubleshooting and security tips, read [`docs/SITE_VALIDATION_GUIDE.md`](docs/SITE_VALIDATION_GUIDE.md).
+
+For a real-time status view of the orchestration rollout, blockers, and validation backlog, consult the [`docs/ORCHESTRATION_VALIDATION_PLAN.md`](docs/ORCHESTRATION_VALIDATION_PLAN.md) checklist before starting new work.
