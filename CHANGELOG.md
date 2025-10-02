@@ -1,5 +1,9 @@
 # Changelog
 
+## [2025-10-02] Local workflow quickstart doc
+- Added `docs/LOCAL_DEV_WORKFLOW.md` with bilingual terminal commands covering Wix CLI login, `gh pr checkout`, and branch conventions.
+- Extended the README with a bilingual quickstart section pointing to the new workflow cheat sheet.
+
 ## [2024-06-10] Quote confirmation fix
 - Synced the local quote state with submitted client info so the confirmation message thanks visitors by name on `Obtenir un devis.c4omm.js`.
 - Documented the manual validation step in the README to re-test the confirmation message after future edits.

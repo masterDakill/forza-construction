@@ -58,3 +58,15 @@ Use the dedicated checklist to confirm that this repository is linked to the cor
 For a bilingual, step-by-step guide covering troubleshooting and security tips, read [`docs/SITE_VALIDATION_GUIDE.md`](docs/SITE_VALIDATION_GUIDE.md).
 
 For a real-time status view of the orchestration rollout, blockers, and validation backlog, consult the [`docs/ORCHESTRATION_VALIDATION_PLAN.md`](docs/ORCHESTRATION_VALIDATION_PLAN.md) checklist before starting new work.
+
+## Local development quickstart / Démarrage rapide local
+
+Keep a terminal open in the project root and follow the bilingual workflow cheat sheet when you start collaborating:
+
+1. 🔐 **Login & status / Connexion & statut** – `wix login` then `wix status` to ensure the CLI session targets Construction Forza.
+2. 🌱 **Branching standard / Convention de branche** – create `git checkout -b codex/<feature>-<date>` before editing.
+3. 📦 **Fetch PRs / Récupérer les PR** – use `gh pr list` to inspect reviews and `gh pr checkout <number>` to test a change locally.
+4. 🧪 **Run quality gates / Exécuter les tests** – run `npm run lint` and the manual quote confirmation check prior to committing.
+5. 🚀 **Launch the local editor / Démarrer l'éditeur local** – run `wix dev` from the repo root to validate UI/UX before pushing.
+
+The detailed checklist lives in [`docs/LOCAL_DEV_WORKFLOW.md`](docs/LOCAL_DEV_WORKFLOW.md) for quick copy/paste access.
