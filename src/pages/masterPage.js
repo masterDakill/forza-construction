@@ -8,6 +8,7 @@ import { navigationHelper, pagesConfig, validatePageElements } from '../config/n
 import { initMobileOptimizations } from './mobileOptimizations.js';
 import { initAdvancedMobileNavigation } from './mobileNavigation.js';
 import { initMobilePerformanceOptimizations } from './mobilePerformance.js';
+import { initChatbot } from '../utils/chatbot.js';
 
 $w.onReady(function () {
     // === INITIALISATION GLOBALE ===
@@ -504,15 +505,13 @@ $w.onReady(function () {
     }
     
     function setupGlobalChat() {
-        // Chat widget global
-        window.openChat = function() {
-            console.log('Opening chat widget...');
-            
-            if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
-                window.gtag('event', 'chat_opened', {
-                    'event_category': 'engagement'
-                });
+        initChatbot({
+            offlineRedirect: '/contact',
+            triggerSelector: '[data-forza-chat], [data-open-chat]',
+            defaultMessage: {
+                fr: "Bonjour! J'aimerais discuter d'un projet de construction résidentielle.",
+                en: 'Hello! I would like to discuss a residential construction project.'
             }
-        };
+        });
     }
 });

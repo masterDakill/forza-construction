@@ -4,10 +4,15 @@
 import wixLocation from 'wix-location';
 import wixData from 'wix-data';
 import wixStorage from 'wix-storage';
+ codex/valider-site-web-construction-forza-sur-wix-2025-10-02
+import { getStoredChatContext } from '../utils/chatbot.js';
+import { initMobileOptimizations } from './mobileOptimizations';
+=======
 import wixWindow from 'wix-window';
 // import { initMobileOptimizations } from './mobileOptimizations'; // Temporairement désactivé
 import FORZA_DESIGN_GUIDE, { generateGlobalCSS } from '../styles/designGuide';
 import { initForzaSite } from '../utils/siteOrchestrator';
+ main
 
 $w.onReady(function () {
     console.log('🚀 Contact Page - Optimisation Premium Loading...');
@@ -192,8 +197,25 @@ $w.onReady(function () {
                 const data = JSON.parse(estimateData);
                 $w('#inputMessage').value = `Projet: ${data.projectType}\nSurface: ${data.surface} pi²\nEstimation: ${data.estimatedPrice}$`;
             }
+
+            const chatContext = getStoredChatContext();
+            if (chatContext) {
+                if (chatContext.subject && $w('#dropdownSujet').options?.some(option => option.value === chatContext.subject)) {
+                    $w('#dropdownSujet').value = chatContext.subject;
+                }
+
+                if (chatContext.message) {
+                    const existingMessage = $w('#inputMessage').value;
+                    const combinedMessage = [existingMessage, chatContext.message]
+                        .filter(Boolean)
+                        .join('\n\n');
+                    $w('#inputMessage').value = combinedMessage;
+                }
+
+                wixStorage.session.removeItem('forzaChatContext');
+            }
         }
-        
+
         // Pré-remplir selon source
         const source = wixLocation.query.source;
         if (source) {

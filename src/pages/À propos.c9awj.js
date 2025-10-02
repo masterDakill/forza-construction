@@ -439,7 +439,7 @@ $w.onReady(function () {
                 animateAllStats();
                 statsAnimated = true;
             }
-        });
+        };
     }
     
     function animateAllStats() {

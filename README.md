@@ -43,6 +43,45 @@ wix preview
 
 ### 3. Publier (30 sec)
 
+codex/valider-site-web-construction-forza-sur-wix-2025-10-02
+## Invite contributors to work with you
+Git Integration & Wix CLI extends Editor X's [concurrent editing](https://support.wix.com/en/article/editor-x-about-concurrent-editing) capabilities. Invite other developers as collaborators on your [site](https://support.wix.com/en/article/inviting-people-to-contribute-to-your-site) and your [GitHub repo](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-access-to-your-personal-repositories/inviting-collaborators-to-a-personal-repository). Multiple developers can work on a site's code at once.
+
+## Validate the Construction Forza site connection / Valider la connexion du site Construction Forza
+
+Use the dedicated checklist to confirm that this repository is linked to the correct Wix site before editing in Git:
+
+1. ✅ **Check `wix.config.json`** – confirm the `siteId` matches the Construction Forza property in Wix.
+2. ✅ **Authenticate with Wix CLI** – run `wix login` followed by `wix status` to make sure the CLI is bound to the same site.
+3. ✅ **Sync and test locally** – run `wix pull` (if you need Wix-side changes) and `wix dev` to preview the site locally.
+4. ✅ **Run quality gates** – execute `npm run lint` before committing to keep the code compatible with Wix' runtime.
+5. ✅ **Commit & push via branch** – work from `codex/<feature>-<date>` branches and open a PR once checks pass.
+6. ✅ **Tester le message de confirmation** – soumettre un devis test et vérifier que le message "Merci <Nom>" affiche bien le nom saisi.
+
+For a bilingual, step-by-step guide covering troubleshooting and security tips, read [`docs/SITE_VALIDATION_GUIDE.md`](docs/SITE_VALIDATION_GUIDE.md).
+
+For a real-time status view of the orchestration rollout, blockers, and validation backlog, consult the [`docs/ORCHESTRATION_VALIDATION_PLAN.md`](docs/ORCHESTRATION_VALIDATION_PLAN.md) checklist before starting new work.
+
+## Local development quickstart / Démarrage rapide local
+
+Keep a terminal open in the project root and follow the bilingual workflow cheat sheet when you start collaborating:
+
+1. 🔐 **Login & status / Connexion & statut** – `wix login` then `wix status` to ensure the CLI session targets Construction Forza.
+2. 🌱 **Branching standard / Convention de branche** – create `git checkout -b codex/<feature>-<date>` before editing.
+3. 📦 **Fetch PRs / Récupérer les PR** – use `gh pr list` to inspect reviews and `gh pr checkout <number>` to test a change locally.
+4. 🧪 **Run quality gates / Exécuter les tests** – run `npm run lint` and the manual quote confirmation check prior to committing.
+5. 🚀 **Launch the local editor / Démarrer l'éditeur local** – run `wix dev` from the repo root to validate UI/UX before pushing.
+
+The detailed checklist lives in [`docs/LOCAL_DEV_WORKFLOW.md`](docs/LOCAL_DEV_WORKFLOW.md) for quick copy/paste access.
+
+**Verification log / Journal de vérification.** Consultez [`docs/VERIFICATION_LOG_2025-10-02.md`](docs/VERIFICATION_LOG_2025-10-02.md) pour suivre les contrôles automatisés exécutés (ex. `npm run lint`) et planifier les validations manuelles restantes avant publication.
+
+## Premium hero & chatbot alignment / Alignement du héro premium et du chatbot
+
+- 🛡️ **Hero copy sync / Synchronisation du héro** – La page d'accueil charge désormais le slogan *Building with Strength and Precision* et le sous-titre *Excellence in Residential Construction & Renovation* pour refléter les maquettes premium fournies. Vérifiez dans l'Éditeur local que `#textHeroTitle`, `#textHeroSubtitle` et `#textHeroDescription` utilisent bien cette copie après tout changement de mise en page.
+- 💬 **Chat triggers / Déclencheurs du chat** – Tout bouton ou lien devant ouvrir le chatbot doit porter l'attribut `data-forza-chat` (et optionnellement `data-chat-subject`, `data-chat-message`, `data-chat-priority`). Le module `src/utils/chatbot.js` se charge alors d'ouvrir Wix Chat ou de rediriger vers `/contact` en cas d'indisponibilité, tout en enregistrant le contexte pour pré-remplir le formulaire.
+- 📋 **Fallback contact / Scénario de repli** – La page Contact récupère automatiquement le contexte du chatbot pour pré-remplir le sujet et le message. Testez en cliquant sur un déclencheur du chat puis en ouvrant `/contact` afin de confirmer que les champs se remplissent et que l'option de sujet correspondante existe.
+=======
 ```bash
 wix publish
 ```
@@ -544,3 +583,4 @@ Votre site Forza Construction est maintenant équipé d'un **système d'orchestr
 _Système CloudCode Orchestrator - Conservation 100% garantie - Non-invasif - Production ready_
 
 </div>
+ main

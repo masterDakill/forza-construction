@@ -85,4 +85,535 @@ class ScrollOptimizer {
                 requestAnimationFrame(() => {
                     this.updateScrollState();
                     this.handleScrollEffects();
-                    ticking = false;\n                });\n                ticking = true;\n            }\n            \n            // Gestion de la fin de scroll avec debounce\n            clearTimeout(scrollTimeout);\n            scrollTimeout = setTimeout(() => {\n                this.onScrollEnd();\n            }, scrollConfig.debounceDelay);\n        };\n        \n        // Attachement des événements\n        if ($w('#page')) {\n            $w('#page').onScroll = (event) => {\n                this.currentScrollY = event.target.scrollY;\n                handleScroll();\n            };\n        } else {\n            // Fallback pour scroll window\n            window.addEventListener('scroll', handleScroll, { passive: true });\n        }\n    }\n    \n    updateScrollState() {\n        const currentScrollY = this.currentScrollY || window.pageYOffset;\n        \n        // Détection direction\n        this.scrollDirection = currentScrollY > this.lastScrollY ? 'down' : 'up';\n        this.isScrolling = Math.abs(currentScrollY - this.lastScrollY) > 5;\n        \n        this.lastScrollY = currentScrollY;\n    }\n    \n    handleScrollEffects() {\n        const scrollY = this.currentScrollY || window.pageYOffset;\n        \n        // Header dynamique\n        this.updateDynamicHeader(scrollY);\n        \n        // Effets parallax\n        this.updateParallaxElements(scrollY);\n        \n        // Indicateur de progression\n        this.updateScrollProgress(scrollY);\n        \n        // Bouton retour en haut\n        this.updateBackToTop(scrollY);\n        \n        // Navigation sticky\n        this.updateStickyNavigation(scrollY);\n    }\n    \n    onScrollEnd() {\n        this.isScrolling = false;\n        \n        // Optimisations lors de l'arrêt du scroll\n        this.optimizeVisibleElements();\n        this.updateLazyLoadedContent();\n    }\n    \n    // === HEADER DYNAMIQUE ===\n    updateDynamicHeader(scrollY) {\n        const header = $w('#header') || document.querySelector('header');\n        if (!header) return;\n        \n        if (scrollY > scrollConfig.headerHideThreshold) {\n            if (this.scrollDirection === 'down') {\n                // Masquer header en scrollant vers le bas\n                this.animateHeader(header, 'hide');\n            } else if (this.scrollDirection === 'up') {\n                // Afficher header en scrollant vers le haut\n                this.animateHeader(header, 'show');\n            }\n            \n            // Ajouter fond transparent avec blur\n            this.addHeaderBackdrop(header);\n        } else {\n            // Header transparent en haut de page\n            this.removeHeaderBackdrop(header);\n            this.animateHeader(header, 'show');\n        }\n    }\n    \n    animateHeader(header, action) {\n        const isWixElement = header.id && $w(`#${header.id}`);\n        \n        if (isWixElement) {\n            const wixHeader = $w(`#${header.id}`);\n            \n            if (action === 'hide') {\n                wixHeader.hide('slide', {\n                    duration: 300,\n                    direction: 'top'\n                });\n            } else {\n                wixHeader.show('slide', {\n                    duration: 300,\n                    direction: 'top'\n                });\n            }\n        } else {\n            // Fallback CSS\n            if (action === 'hide') {\n                header.style.transform = 'translateY(-100%)';\n            } else {\n                header.style.transform = 'translateY(0)';\n            }\n            header.style.transition = 'transform 0.3s ease';\n        }\n    }\n    \n    addHeaderBackdrop(header) {\n        if (!header.classList?.contains('backdrop-active')) {\n            if ($w(`#${header.id}`)) {\n                $w(`#${header.id}`).style.backgroundColor = 'rgba(255, 255, 255, 0.95)';\n                $w(`#${header.id}`).style.backdropFilter = 'blur(10px)';\n                $w(`#${header.id}`).style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';\n            } else {\n                header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';\n                header.style.backdropFilter = 'blur(10px)';\n                header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';\n            }\n            header.classList?.add('backdrop-active');\n        }\n    }\n    \n    removeHeaderBackdrop(header) {\n        if (header.classList?.contains('backdrop-active')) {\n            if ($w(`#${header.id}`)) {\n                $w(`#${header.id}`).style.backgroundColor = 'transparent';\n                $w(`#${header.id}`).style.backdropFilter = 'none';\n                $w(`#${header.id}`).style.boxShadow = 'none';\n            } else {\n                header.style.backgroundColor = 'transparent';\n                header.style.backdropFilter = 'none';\n                header.style.boxShadow = 'none';\n            }\n            header.classList?.remove('backdrop-active');\n        }\n    }\n    \n    // === EFFETS PARALLAX ===\n    updateParallaxElements(scrollY) {\n        const parallaxElements = [\n            { id: '#heroSection', speed: 0.5 },\n            { id: '#aboutSection', speed: 0.3 },\n            { id: '#servicesBackground', speed: 0.2 }\n        ];\n        \n        parallaxElements.forEach(element => {\n            const el = $w(element.id);\n            if (el) {\n                const offset = scrollY * element.speed;\n                el.style.transform = `translateY(${offset}px)`;\n            }\n        });\n    }\n    \n    // === INDICATEUR DE PROGRESSION ===\n    updateScrollProgress(scrollY) {\n        const documentHeight = document.documentElement.scrollHeight - window.innerHeight;\n        const progress = (scrollY / documentHeight) * 100;\n        \n        // Barre de progression en haut\n        const progressBar = $w('#scrollProgressBar');\n        if (progressBar) {\n            progressBar.style.width = `${Math.min(progress, 100)}%`;\n        }\n        \n        // Indicateur circulaire\n        const circularProgress = $w('#circularProgress');\n        if (circularProgress) {\n            const circumference = 2 * Math.PI * 20; // rayon 20px\n            const strokeDasharray = (progress / 100) * circumference;\n            circularProgress.style.strokeDasharray = `${strokeDasharray} ${circumference}`;\n        }\n    }\n    \n    // === BOUTON RETOUR EN HAUT ===\n    updateBackToTop(scrollY) {\n        const backToTopBtn = $w('#backToTopBtn');\n        if (!backToTopBtn) return;\n        \n        if (scrollY > scrollConfig.backToTopThreshold) {\n            if (!backToTopBtn.isVisible) {\n                backToTopBtn.show('fade', { duration: 300 });\n                this.setupBackToTopClick(backToTopBtn);\n            }\n        } else {\n            if (backToTopBtn.isVisible) {\n                backToTopBtn.hide('fade', { duration: 300 });\n            }\n        }\n    }\n    \n    setupBackToTopClick(button) {\n        if (!button._clickHandlerSet) {\n            button.onClick(() => {\n                this.smoothScrollTo(0);\n            });\n            button._clickHandlerSet = true;\n        }\n    }\n    \n    // === SCROLL FLUIDE ===\n    setupSmoothScrolling() {\n        // Liens d'ancrage\n        const anchorLinks = document.querySelectorAll('a[href^=\"#\"]');\n        anchorLinks.forEach(link => {\n            link.addEventListener('click', (e) => {\n                e.preventDefault();\n                const targetId = link.getAttribute('href').substring(1);\n                const targetElement = $w(`#${targetId}`) || document.getElementById(targetId);\n                \n                if (targetElement) {\n                    this.smoothScrollToElement(targetElement);\n                }\n            });\n        });\n    }\n    \n    smoothScrollTo(targetY) {\n        const startY = window.pageYOffset;\n        const distance = targetY - startY;\n        const duration = scrollConfig.smoothScrollDuration;\n        let startTime = null;\n        \n        const animation = (currentTime) => {\n            if (startTime === null) startTime = currentTime;\n            const timeElapsed = currentTime - startTime;\n            const progress = Math.min(timeElapsed / duration, 1);\n            \n            // Fonction d'easing (ease-out-cubic)\n            const easeOutCubic = 1 - Math.pow(1 - progress, 3);\n            \n            window.scrollTo(0, startY + distance * easeOutCubic);\n            \n            if (progress < 1) {\n                requestAnimationFrame(animation);\n            }\n        };\n        \n        requestAnimationFrame(animation);\n    }\n    \n    smoothScrollToElement(element) {\n        let targetY;\n        \n        if ($w(`#${element.id || element.className}`)) {\n            // Élément Wix\n            const wixElement = $w(`#${element.id || element.className}`);\n            targetY = wixElement.y || 0;\n        } else {\n            // Élément DOM standard\n            targetY = element.getBoundingClientRect().top + window.pageYOffset;\n        }\n        \n        // Ajustement pour header fixe\n        const headerHeight = this.getHeaderHeight();\n        targetY -= headerHeight + 20; // 20px de marge\n        \n        this.smoothScrollTo(Math.max(0, targetY));\n    }\n    \n    getHeaderHeight() {\n        const header = $w('#header') || document.querySelector('header');\n        if (header) {\n            return header.offsetHeight || header.height || 80;\n        }\n        return 80; // fallback\n    }\n    \n    // === ANIMATIONS D'ÉLÉMENTS ===\n    initializeAnimatableElements() {\n        const animatableSelectors = [\n            '#servicesSection',\n            '#aboutSection', \n            '#portfolioSection',\n            '#testimonialsSection',\n            '#contactSection',\n            '.animate-on-scroll',\n            '.fade-in-up',\n            '.slide-in-left',\n            '.slide-in-right'\n        ];\n        \n        animatableSelectors.forEach(selector => {\n            const elements = this.getElements(selector);\n            elements.forEach(element => {\n                if (this.visibilityObserver) {\n                    this.visibilityObserver.observe(element);\n                } else {\n                    // Fallback sans Intersection Observer\n                    this.setupFallbackAnimation(element);\n                }\n            });\n        });\n    }\n    \n    getElements(selector) {\n        const elements = [];\n        \n        // Essayer Wix d'abord\n        if (selector.startsWith('#')) {\n            const wixElement = $w(selector);\n            if (wixElement) {\n                elements.push(wixElement);\n            }\n        }\n        \n        // Essayer DOM standard\n        const domElements = document.querySelectorAll(selector);\n        elements.push(...Array.from(domElements));\n        \n        return elements;\n    }\n    \n    triggerElementAnimation(element) {\n        if (this.animatedElements.has(element)) return;\n        \n        const animationType = this.getAnimationType(element);\n        this.animateElement(element, animationType);\n        this.animatedElements.add(element);\n    }\n    \n    getAnimationType(element) {\n        const classes = element.className || '';\n        \n        if (classes.includes('fade-in-up')) return 'fadeInUp';\n        if (classes.includes('slide-in-left')) return 'slideInLeft';\n        if (classes.includes('slide-in-right')) return 'slideInRight';\n        if (classes.includes('zoom-in')) return 'zoomIn';\n        \n        // Animation par défaut\n        return 'fadeInUp';\n    }\n    \n    animateElement(element, animationType) {\n        const isWixElement = element.id && $w(`#${element.id}`);\n        \n        if (isWixElement) {\n            const wixEl = $w(`#${element.id}`);\n            \n            switch(animationType) {\n                case 'fadeInUp':\n                    wixEl.show('slide', {\n                        duration: scrollConfig.slideInDuration,\n                        direction: 'bottom'\n                    });\n                    break;\n                    \n                case 'slideInLeft':\n                    wixEl.show('slide', {\n                        duration: scrollConfig.slideInDuration,\n                        direction: 'left'\n                    });\n                    break;\n                    \n                case 'slideInRight':\n                    wixEl.show('slide', {\n                        duration: scrollConfig.slideInDuration,\n                        direction: 'right'\n                    });\n                    break;\n                    \n                default:\n                    wixEl.show('fade', {\n                        duration: scrollConfig.fadeInDuration\n                    });\n            }\n        } else {\n            // Animation CSS pour éléments DOM\n            this.applyCSSAnimation(element, animationType);\n        }\n    }\n    \n    applyCSSAnimation(element, animationType) {\n        element.style.opacity = '0';\n        element.style.transform = this.getInitialTransform(animationType);\n        element.style.transition = `all ${scrollConfig.fadeInDuration}ms ease`;\n        \n        // Déclencher l'animation\n        requestAnimationFrame(() => {\n            element.style.opacity = '1';\n            element.style.transform = 'translateY(0) translateX(0) scale(1)';\n        });\n    }\n    \n    getInitialTransform(animationType) {\n        switch(animationType) {\n            case 'fadeInUp': return 'translateY(30px)';\n            case 'slideInLeft': return 'translateX(-30px)';\n            case 'slideInRight': return 'translateX(30px)';\n            case 'zoomIn': return 'scale(0.9)';\n            default: return 'translateY(20px)';\n        }\n    }\n    \n    // === OPTIMISATIONS ADDITIONNELLES ===\n    setupScrollIndicator() {\n        // Créer indicateur de progression si non existant\n        if (!$w('#scrollProgressBar')) {\n            this.createScrollProgressBar();\n        }\n    }\n    \n    createScrollProgressBar() {\n        const progressBarHTML = `\n            <div id=\"scrollProgressBar\" style=\"\n                position: fixed;\n                top: 0;\n                left: 0;\n                height: 3px;\n                background: linear-gradient(90deg, #ff6b35, #f7931e);\n                z-index: 9999;\n                transition: width 0.1s linear;\n                width: 0%;\n            \"></div>\n        `;\n        \n        document.body.insertAdjacentHTML('afterbegin', progressBarHTML);\n    }\n    \n    optimizeVisibleElements() {\n        // Optimisations lors de l'arrêt du scroll\n        this.updateLazyImages();\n        this.preloadNextSectionContent();\n    }\n    \n    updateLazyImages() {\n        const lazyImages = document.querySelectorAll('img[data-src]');\n        lazyImages.forEach(img => {\n            if (this.isElementVisible(img)) {\n                img.src = img.dataset.src;\n                img.removeAttribute('data-src');\n            }\n        });\n    }\n    \n    isElementVisible(element) {\n        const rect = element.getBoundingClientRect();\n        return rect.top < window.innerHeight && rect.bottom > 0;\n    }\n    \n    preloadNextSectionContent() {\n        // Précharger le contenu de la section suivante\n        // Logique spécifique selon les besoins\n    }\n    \n    // === FALLBACKS ===\n    setupFallbackVisibility() {\n        // Pour navigateurs sans Intersection Observer\n        setInterval(() => {\n            this.checkElementsVisibility();\n        }, 500);\n    }\n    \n    checkElementsVisibility() {\n        const elements = document.querySelectorAll('.animate-on-scroll');\n        elements.forEach(element => {\n            if (!this.animatedElements.has(element) && this.isElementVisible(element)) {\n                this.triggerElementAnimation(element);\n            }\n        });\n    }\n    \n    // === UTILITAIRES ===\n    pauseElementAnimation(element) {\n        // Pause les animations coûteuses pour les éléments non visibles\n        if (this.activeAnimations.has(element)) {\n            const animation = this.activeAnimations.get(element);\n            if (animation.pause) {\n                animation.pause();\n            }\n        }\n    }\n    \n    destroy() {\n        // Nettoyage lors de la destruction\n        if (this.visibilityObserver) {\n            this.visibilityObserver.disconnect();\n        }\n        \n        this.animatedElements.clear();\n        this.activeAnimations.clear();\n    }\n}\n\n// === FONCTION D'INITIALISATION ===\nexport function initializeScrollOptimization() {\n    // Attendre que Wix soit prêt\n    if (typeof $w !== 'undefined') {\n        return new ScrollOptimizer();\n    } else {\n        // Fallback pour environnements non-Wix\n        document.addEventListener('DOMContentLoaded', () => {\n            return new ScrollOptimizer();\n        });\n    }\n}\n\n// === UTILITAIRES PUBLICS ===\nexport const scrollUtils = {\n    smoothScrollTo: (targetY) => {\n        const instance = new ScrollOptimizer();\n        instance.smoothScrollTo(targetY);\n    },\n    \n    scrollToElement: (elementId) => {\n        const element = $w(`#${elementId}`) || document.getElementById(elementId);\n        if (element) {\n            const instance = new ScrollOptimizer();\n            instance.smoothScrollToElement(element);\n        }\n    },\n    \n    addScrollAnimation: (elementId, animationType = 'fadeInUp') => {\n        const element = $w(`#${elementId}`) || document.getElementById(elementId);\n        if (element) {\n            element.classList.add('animate-on-scroll', animationType.toLowerCase().replace(/([A-Z])/g, '-$1'));\n        }\n    }\n};\n\n// Export par défaut\nexport default {\n    ScrollOptimizer,\n    initializeScrollOptimization,\n    scrollUtils,\n    scrollConfig\n};
+                    ticking = false;
+                });
+                ticking = true;
+            }
+            
+            // Gestion de la fin de scroll avec debounce
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                this.onScrollEnd();
+            }, scrollConfig.debounceDelay);
+        };
+        
+        // Attachement des événements
+        if ($w('#page')) {
+            $w('#page').onScroll = (event) => {
+                this.currentScrollY = event.target.scrollY;
+                handleScroll();
+            };
+        } else {
+            // Fallback pour scroll window
+            window.addEventListener('scroll', handleScroll, { passive: true });
+        }
+    }
+    
+    updateScrollState() {
+        const currentScrollY = this.currentScrollY || window.pageYOffset;
+        
+        // Détection direction
+        this.scrollDirection = currentScrollY > this.lastScrollY ? 'down' : 'up';
+        this.isScrolling = Math.abs(currentScrollY - this.lastScrollY) > 5;
+        
+        this.lastScrollY = currentScrollY;
+    }
+    
+    handleScrollEffects() {
+        const scrollY = this.currentScrollY || window.pageYOffset;
+        
+        // Header dynamique
+        this.updateDynamicHeader(scrollY);
+        
+        // Effets parallax
+        this.updateParallaxElements(scrollY);
+        
+        // Indicateur de progression
+        this.updateScrollProgress(scrollY);
+        
+        // Bouton retour en haut
+        this.updateBackToTop(scrollY);
+        
+        // Navigation sticky
+        this.updateStickyNavigation(scrollY);
+    }
+    
+    onScrollEnd() {
+        this.isScrolling = false;
+        
+        // Optimisations lors de l'arrêt du scroll
+        this.optimizeVisibleElements();
+        this.updateLazyLoadedContent();
+    }
+    
+    // === HEADER DYNAMIQUE ===
+    updateDynamicHeader(scrollY) {
+        const header = $w('#header') || document.querySelector('header');
+        if (!header) return;
+        
+        if (scrollY > scrollConfig.headerHideThreshold) {
+            if (this.scrollDirection === 'down') {
+                // Masquer header en scrollant vers le bas
+                this.animateHeader(header, 'hide');
+            } else if (this.scrollDirection === 'up') {
+                // Afficher header en scrollant vers le haut
+                this.animateHeader(header, 'show');
+            }
+            
+            // Ajouter fond transparent avec blur
+            this.addHeaderBackdrop(header);
+        } else {
+            // Header transparent en haut de page
+            this.removeHeaderBackdrop(header);
+            this.animateHeader(header, 'show');
+        }
+    }
+    
+    animateHeader(header, action) {
+        const isWixElement = header.id && $w(`#${header.id}`);
+        
+        if (isWixElement) {
+            const wixHeader = $w(`#${header.id}`);
+            
+            if (action === 'hide') {
+                wixHeader.hide('slide', {
+                    duration: 300,
+                    direction: 'top'
+                });
+            } else {
+                wixHeader.show('slide', {
+                    duration: 300,
+                    direction: 'top'
+                });
+            }
+        } else {
+            // Fallback CSS
+            if (action === 'hide') {
+                header.style.transform = 'translateY(-100%)';
+            } else {
+                header.style.transform = 'translateY(0)';
+            }
+            header.style.transition = 'transform 0.3s ease';
+        }
+    }
+    
+    addHeaderBackdrop(header) {
+        if (!header.classList?.contains('backdrop-active')) {
+            if ($w(`#${header.id}`)) {
+                $w(`#${header.id}`).style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                $w(`#${header.id}`).style.backdropFilter = 'blur(10px)';
+                $w(`#${header.id}`).style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            } else {
+                header.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+                header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            }
+            header.classList?.add('backdrop-active');
+        }
+    }
+    
+    removeHeaderBackdrop(header) {
+        if (header.classList?.contains('backdrop-active')) {
+            if ($w(`#${header.id}`)) {
+                $w(`#${header.id}`).style.backgroundColor = 'transparent';
+                $w(`#${header.id}`).style.backdropFilter = 'none';
+                $w(`#${header.id}`).style.boxShadow = 'none';
+            } else {
+                header.style.backgroundColor = 'transparent';
+                header.style.backdropFilter = 'none';
+                header.style.boxShadow = 'none';
+            }
+            header.classList?.remove('backdrop-active');
+        }
+    }
+    
+    // === EFFETS PARALLAX ===
+    updateParallaxElements(scrollY) {
+        const parallaxElements = [
+            { id: '#heroSection', speed: 0.5 },
+            { id: '#aboutSection', speed: 0.3 },
+            { id: '#servicesBackground', speed: 0.2 }
+        ];
+        
+        parallaxElements.forEach(element => {
+            const el = $w(element.id);
+            if (el) {
+                const offset = scrollY * element.speed;
+                el.style.transform = `translateY(${offset}px)`;
+            }
+        });
+    }
+    
+    // === INDICATEUR DE PROGRESSION ===
+    updateScrollProgress(scrollY) {
+        const documentHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = (scrollY / documentHeight) * 100;
+        
+        // Barre de progression en haut
+        const progressBar = $w('#scrollProgressBar');
+        if (progressBar) {
+            progressBar.style.width = `${Math.min(progress, 100)}%`;
+        }
+        
+        // Indicateur circulaire
+        const circularProgress = $w('#circularProgress');
+        if (circularProgress) {
+            const circumference = 2 * Math.PI * 20; // rayon 20px
+            const strokeDasharray = (progress / 100) * circumference;
+            circularProgress.style.strokeDasharray = `${strokeDasharray} ${circumference}`;
+        }
+    }
+    
+    // === BOUTON RETOUR EN HAUT ===
+    updateBackToTop(scrollY) {
+        const backToTopBtn = $w('#backToTopBtn');
+        if (!backToTopBtn) return;
+        
+        if (scrollY > scrollConfig.backToTopThreshold) {
+            if (!backToTopBtn.isVisible) {
+                backToTopBtn.show('fade', { duration: 300 });
+                this.setupBackToTopClick(backToTopBtn);
+            }
+        } else {
+            if (backToTopBtn.isVisible) {
+                backToTopBtn.hide('fade', { duration: 300 });
+            }
+        }
+    }
+    
+    setupBackToTopClick(button) {
+        if (!button._clickHandlerSet) {
+            button.onClick(() => {
+                this.smoothScrollTo(0);
+            });
+            button._clickHandlerSet = true;
+        }
+    }
+    
+    // === SCROLL FLUIDE ===
+    setupSmoothScrolling() {
+        // Liens d'ancrage
+        const anchorLinks = document.querySelectorAll('a[href^=\"#\"]');
+        anchorLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = $w(`#${targetId}`) || document.getElementById(targetId);
+                
+                if (targetElement) {
+                    this.smoothScrollToElement(targetElement);
+                }
+            });
+        });
+    }
+    
+    smoothScrollTo(targetY) {
+        const startY = window.pageYOffset;
+        const distance = targetY - startY;
+        const duration = scrollConfig.smoothScrollDuration;
+        let startTime = null;
+        
+        const animation = (currentTime) => {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            const progress = Math.min(timeElapsed / duration, 1);
+            
+            // Fonction d'easing (ease-out-cubic)
+            const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+            
+            window.scrollTo(0, startY + distance * easeOutCubic);
+            
+            if (progress < 1) {
+                requestAnimationFrame(animation);
+            }
+        };
+        
+        requestAnimationFrame(animation);
+    }
+    
+    smoothScrollToElement(element) {
+        let targetY;
+        
+        if ($w(`#${element.id || element.className}`)) {
+            // Élément Wix
+            const wixElement = $w(`#${element.id || element.className}`);
+            targetY = wixElement.y || 0;
+        } else {
+            // Élément DOM standard
+            targetY = element.getBoundingClientRect().top + window.pageYOffset;
+        }
+        
+        // Ajustement pour header fixe
+        const headerHeight = this.getHeaderHeight();
+        targetY -= headerHeight + 20; // 20px de marge
+        
+        this.smoothScrollTo(Math.max(0, targetY));
+    }
+    
+    getHeaderHeight() {
+        const header = $w('#header') || document.querySelector('header');
+        if (header) {
+            return header.offsetHeight || header.height || 80;
+        }
+        return 80; // fallback
+    }
+    
+    // === ANIMATIONS D'ÉLÉMENTS ===
+    initializeAnimatableElements() {
+        const animatableSelectors = [
+            '#servicesSection',
+            '#aboutSection', 
+            '#portfolioSection',
+            '#testimonialsSection',
+            '#contactSection',
+            '.animate-on-scroll',
+            '.fade-in-up',
+            '.slide-in-left',
+            '.slide-in-right'
+        ];
+        
+        animatableSelectors.forEach(selector => {
+            const elements = this.getElements(selector);
+            elements.forEach(element => {
+                if (this.visibilityObserver) {
+                    this.visibilityObserver.observe(element);
+                } else {
+                    // Fallback sans Intersection Observer
+                    this.setupFallbackAnimation(element);
+                }
+            });
+        });
+    }
+    
+    getElements(selector) {
+        const elements = [];
+        
+        // Essayer Wix d'abord
+        if (selector.startsWith('#')) {
+            const wixElement = $w(selector);
+            if (wixElement) {
+                elements.push(wixElement);
+            }
+        }
+        
+        // Essayer DOM standard
+        const domElements = document.querySelectorAll(selector);
+        elements.push(...Array.from(domElements));
+        
+        return elements;
+    }
+    
+    triggerElementAnimation(element) {
+        if (this.animatedElements.has(element)) return;
+        
+        const animationType = this.getAnimationType(element);
+        this.animateElement(element, animationType);
+        this.animatedElements.add(element);
+    }
+    
+    getAnimationType(element) {
+        const classes = element.className || '';
+        
+        if (classes.includes('fade-in-up')) return 'fadeInUp';
+        if (classes.includes('slide-in-left')) return 'slideInLeft';
+        if (classes.includes('slide-in-right')) return 'slideInRight';
+        if (classes.includes('zoom-in')) return 'zoomIn';
+        
+        // Animation par défaut
+        return 'fadeInUp';
+    }
+    
+    animateElement(element, animationType) {
+        const isWixElement = element.id && $w(`#${element.id}`);
+        
+        if (isWixElement) {
+            const wixEl = $w(`#${element.id}`);
+            
+            switch(animationType) {
+                case 'fadeInUp':
+                    wixEl.show('slide', {
+                        duration: scrollConfig.slideInDuration,
+                        direction: 'bottom'
+                    });
+                    break;
+                    
+                case 'slideInLeft':
+                    wixEl.show('slide', {
+                        duration: scrollConfig.slideInDuration,
+                        direction: 'left'
+                    });
+                    break;
+                    
+                case 'slideInRight':
+                    wixEl.show('slide', {
+                        duration: scrollConfig.slideInDuration,
+                        direction: 'right'
+                    });
+                    break;
+                    
+                default:
+                    wixEl.show('fade', {
+                        duration: scrollConfig.fadeInDuration
+                    });
+            }
+        } else {
+            // Animation CSS pour éléments DOM
+            this.applyCSSAnimation(element, animationType);
+        }
+    }
+    
+    applyCSSAnimation(element, animationType) {
+        element.style.opacity = '0';
+        element.style.transform = this.getInitialTransform(animationType);
+        element.style.transition = `all ${scrollConfig.fadeInDuration}ms ease`;
+        
+        // Déclencher l'animation
+        requestAnimationFrame(() => {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0) translateX(0) scale(1)';
+        });
+    }
+    
+    getInitialTransform(animationType) {
+        switch(animationType) {
+            case 'fadeInUp': return 'translateY(30px)';
+            case 'slideInLeft': return 'translateX(-30px)';
+            case 'slideInRight': return 'translateX(30px)';
+            case 'zoomIn': return 'scale(0.9)';
+            default: return 'translateY(20px)';
+        }
+    }
+    
+    // === OPTIMISATIONS ADDITIONNELLES ===
+    setupScrollIndicator() {
+        // Créer indicateur de progression si non existant
+        if (!$w('#scrollProgressBar')) {
+            this.createScrollProgressBar();
+        }
+    }
+    
+    createScrollProgressBar() {
+        const progressBarHTML = `
+            <div id=\"scrollProgressBar\" style=\"
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #ff6b35, #f7931e);
+                z-index: 9999;
+                transition: width 0.1s linear;
+                width: 0%;
+            \"></div>
+        `;
+        
+        document.body.insertAdjacentHTML('afterbegin', progressBarHTML);
+    }
+    
+    optimizeVisibleElements() {
+        // Optimisations lors de l'arrêt du scroll
+        this.updateLazyImages();
+        this.preloadNextSectionContent();
+    }
+    
+    updateLazyImages() {
+        const lazyImages = document.querySelectorAll('img[data-src]');
+        lazyImages.forEach(img => {
+            if (this.isElementVisible(img)) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            }
+        });
+    }
+    
+    isElementVisible(element) {
+        const rect = element.getBoundingClientRect();
+        return rect.top < window.innerHeight && rect.bottom > 0;
+    }
+    
+    preloadNextSectionContent() {
+        // Précharger le contenu de la section suivante
+        // Logique spécifique selon les besoins
+    }
+    
+    // === FALLBACKS ===
+    setupFallbackVisibility() {
+        // Pour navigateurs sans Intersection Observer
+        setInterval(() => {
+            this.checkElementsVisibility();
+        }, 500);
+    }
+    
+    checkElementsVisibility() {
+        const elements = document.querySelectorAll('.animate-on-scroll');
+        elements.forEach(element => {
+            if (!this.animatedElements.has(element) && this.isElementVisible(element)) {
+                this.triggerElementAnimation(element);
+            }
+        });
+    }
+    
+    // === UTILITAIRES ===
+    pauseElementAnimation(element) {
+        // Pause les animations coûteuses pour les éléments non visibles
+        if (this.activeAnimations.has(element)) {
+            const animation = this.activeAnimations.get(element);
+            if (animation.pause) {
+                animation.pause();
+            }
+        }
+    }
+    
+    destroy() {
+        // Nettoyage lors de la destruction
+        if (this.visibilityObserver) {
+            this.visibilityObserver.disconnect();
+        }
+        
+        this.animatedElements.clear();
+        this.activeAnimations.clear();
+    }
+}
+
+// === FONCTION D'INITIALISATION ===
+export function initializeScrollOptimization() {
+    // Attendre que Wix soit prêt
+    if (typeof $w !== 'undefined') {
+        return new ScrollOptimizer();
+    } else {
+        // Fallback pour environnements non-Wix
+        document.addEventListener('DOMContentLoaded', () => {
+            return new ScrollOptimizer();
+        });
+    }
+}
+
+// === UTILITAIRES PUBLICS ===
+export const scrollUtils = {
+    smoothScrollTo: (targetY) => {
+        const instance = new ScrollOptimizer();
+        instance.smoothScrollTo(targetY);
+    },
+    
+    scrollToElement: (elementId) => {
+        const element = $w(`#${elementId}`) || document.getElementById(elementId);
+        if (element) {
+            const instance = new ScrollOptimizer();
+            instance.smoothScrollToElement(element);
+        }
+    },
+    
+    addScrollAnimation: (elementId, animationType = 'fadeInUp') => {
+        const element = $w(`#${elementId}`) || document.getElementById(elementId);
+        if (element) {
+            element.classList.add('animate-on-scroll', animationType.toLowerCase().replace(/([A-Z])/g, '-$1'));
+        }
+    }
+};
+
+// Export par défaut
+export default {
+    ScrollOptimizer,
+    initializeScrollOptimization,
+    scrollUtils,
+    scrollConfig
+};

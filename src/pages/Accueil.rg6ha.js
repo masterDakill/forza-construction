@@ -204,6 +204,19 @@ $w.onReady(function () {
 
         // Titre Hero - Texte optimisé et percutant
         if ($w('#textHeroTitle')) {
+ codex/valider-site-web-construction-forza-sur-wix-2025-10-02
+            $w('#textHeroTitle').text = "Building with Strength and Precision";
+        }
+
+        // Sous-titre
+        if ($w('#textHeroSubtitle')) {
+            $w('#textHeroSubtitle').text = "Excellence in Residential Construction & Renovation";
+        }
+
+        // Description
+        if ($w('#textHeroDescription')) {
+            $w('#textHeroDescription').text = "Forza Construction Inc. — Entrepreneur général à Québec. Turn-key renovations, structural builds, and premium finishes tailored to your home.";
+=======
             $w('#textHeroTitle').text = isMobile ?
                 "Rénovation Expert Québec" :
                 "Transformez Votre Maison en Chef-d'Œuvre";
@@ -230,6 +243,7 @@ $w.onReady(function () {
             $w('#textHeroDescription').style.color = FORZA_DESIGN_GUIDE.colors.neutral.gray[300];
             $w('#textHeroDescription').style.lineHeight = FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed;
             $w('#textHeroDescription').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.xl;
+main
         }
 
         // Indicateurs de confiance
@@ -538,15 +552,15 @@ $w.onReady(function () {
     
     function adaptTextForMobile() {
         if ($w('#textHeroTitle')) {
-            $w('#textHeroTitle').text = "Rénovation Expert Québec";
+            $w('#textHeroTitle').text = "Forza Construction – Québec";
         }
-        
+
         if ($w('#textHeroSubtitle')) {
-            $w('#textHeroSubtitle').text = "15 ans • 2000+ projets • Garantie 10 ans";
+            $w('#textHeroSubtitle').text = "Résidentiel haut de gamme • Rénovation et agrandissement";
         }
-        
+
         if ($w('#textHeroDescription')) {
-            $w('#textHeroDescription').text = "Cuisine, salle de bain, agrandissement. Devis gratuit 24h.";
+            $w('#textHeroDescription').text = "Devis 24 h • Gestion clé en main • Finition premium";
         }
     }
     
