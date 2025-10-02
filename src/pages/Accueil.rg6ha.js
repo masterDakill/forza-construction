@@ -36,17 +36,17 @@ $w.onReady(function () {
     function setupHeroSection() {
         // Titre principal
         if ($w('#textHeroTitle')) {
-            $w('#textHeroTitle').text = "Transformez Votre Maison avec Forza Construction";
+            $w('#textHeroTitle').text = "Building with Strength and Precision";
         }
-        
+
         // Sous-titre
         if ($w('#textHeroSubtitle')) {
-            $w('#textHeroSubtitle').text = "Experts en rénovation depuis 15 ans • Plus de 2,000 projets réalisés • Garantie 10 ans";
+            $w('#textHeroSubtitle').text = "Excellence in Residential Construction & Renovation";
         }
-        
+
         // Description
         if ($w('#textHeroDescription')) {
-            $w('#textHeroDescription').text = "De la cuisine de rêve à l'agrandissement familial, nous donnons vie à vos projets avec excellence.";
+            $w('#textHeroDescription').text = "Forza Construction Inc. — Entrepreneur général à Québec. Turn-key renovations, structural builds, and premium finishes tailored to your home.";
         }
         
         // Boutons d'action
@@ -335,15 +335,15 @@ $w.onReady(function () {
     
     function adaptTextForMobile() {
         if ($w('#textHeroTitle')) {
-            $w('#textHeroTitle').text = "Rénovation Expert Québec";
+            $w('#textHeroTitle').text = "Forza Construction – Québec";
         }
-        
+
         if ($w('#textHeroSubtitle')) {
-            $w('#textHeroSubtitle').text = "15 ans • 2000+ projets • Garantie 10 ans";
+            $w('#textHeroSubtitle').text = "Résidentiel haut de gamme • Rénovation et agrandissement";
         }
-        
+
         if ($w('#textHeroDescription')) {
-            $w('#textHeroDescription').text = "Cuisine, salle de bain, agrandissement. Devis gratuit 24h.";
+            $w('#textHeroDescription').text = "Devis 24 h • Gestion clé en main • Finition premium";
         }
     }
     

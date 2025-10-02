@@ -72,3 +72,9 @@ Keep a terminal open in the project root and follow the bilingual workflow cheat
 The detailed checklist lives in [`docs/LOCAL_DEV_WORKFLOW.md`](docs/LOCAL_DEV_WORKFLOW.md) for quick copy/paste access.
 
 **Verification log / Journal de vérification.** Consultez [`docs/VERIFICATION_LOG_2025-10-02.md`](docs/VERIFICATION_LOG_2025-10-02.md) pour suivre les contrôles automatisés exécutés (ex. `npm run lint`) et planifier les validations manuelles restantes avant publication.
+
+## Premium hero & chatbot alignment / Alignement du héro premium et du chatbot
+
+- 🛡️ **Hero copy sync / Synchronisation du héro** – La page d'accueil charge désormais le slogan *Building with Strength and Precision* et le sous-titre *Excellence in Residential Construction & Renovation* pour refléter les maquettes premium fournies. Vérifiez dans l'Éditeur local que `#textHeroTitle`, `#textHeroSubtitle` et `#textHeroDescription` utilisent bien cette copie après tout changement de mise en page.
+- 💬 **Chat triggers / Déclencheurs du chat** – Tout bouton ou lien devant ouvrir le chatbot doit porter l'attribut `data-forza-chat` (et optionnellement `data-chat-subject`, `data-chat-message`, `data-chat-priority`). Le module `src/utils/chatbot.js` se charge alors d'ouvrir Wix Chat ou de rediriger vers `/contact` en cas d'indisponibilité, tout en enregistrant le contexte pour pré-remplir le formulaire.
+- 📋 **Fallback contact / Scénario de repli** – La page Contact récupère automatiquement le contexte du chatbot pour pré-remplir le sujet et le message. Testez en cliquant sur un déclencheur du chat puis en ouvrant `/contact` afin de confirmer que les champs se remplissent et que l'option de sujet correspondante existe.

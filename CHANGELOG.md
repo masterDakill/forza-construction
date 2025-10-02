@@ -1,5 +1,11 @@
 # Changelog
 
+## [2025-10-02] Chatbot optimisation & hero copy alignment
+- Added `src/utils/chatbot.js` to centralise Wix Chat triggers, store context in session storage, and provide a graceful redirect to `/contact` when the widget is unavailable.
+- Updated `src/pages/masterPage.js` to initialise the chatbot module globally with bilingual default messages and support for `data-forza-chat` triggers.
+- Refreshed the homepage hero copy in `src/pages/Accueil.rg6ha.js` to match the premium mockups and adjusted the mobile variant.
+- Prefilled the contact form with chatbot context via `src/pages/Contact.anc3u.js` and documented the workflow in the README.
+
 ## [2025-10-02] Verification log & workflow quickstart
 - Captured the latest lint execution in `docs/VERIFICATION_LOG_2025-10-02.md` to provide a traceable verification history.
 - Linked the README quickstart to the verification log so contributors can review completed checks before editing Wix pages.
