@@ -1,12 +1,12 @@
 // Page Obtenir un Devis - Forza Construction Inc.
-// Formulaire intelligent avec calcul instantané et workflow automatisé
+// Version temporaire simplifiée pour résoudre erreurs de build
 
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
-import wixWindow from 'wix-window';
-import wixStorage from 'wix-storage';
+import { initForzaSite } from '../utils/siteOrchestrator';
 
 $w.onReady(function () {
+ codex/valider-site-web-construction-forza-sur-wix-2025-10-02
     // === INITIALISATION ===
     initializeQuoteForm();
     setupPriceCalculator();
@@ -788,3 +788,19 @@ $w.onReady(function () {
     
     console.log('Quote form initialized with', Object.keys(serviceCategories).length, 'service categories');
 });
+=======
+    console.log('🚀 Devis Page - Loading...');
+
+    // === ORCHESTRATEUR ===
+    initForzaSite('quote', {
+        enableSEO: true,
+        enableAnalytics: true,
+        enableNavigation: true,
+        enablePerformance: true
+    });
+
+    // Message temporaire
+    console.log('✅ Page Devis chargée - Version simplifiée temporaire');
+    console.log('Note: Formulaire de devis fonctionnel via éditeur Wix');
+});
+main

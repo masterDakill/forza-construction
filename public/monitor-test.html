@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forza Monitor - Test Console</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #FF6B35;
+            margin-top: 0;
+        }
+        button {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #E55A2B;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #E8F4F8;
+            border-left: 4px solid #1E88E5;
+            border-radius: 4px;
+        }
+        .warning {
+            margin-top: 20px;
+            padding: 15px;
+            background: #FFF3E0;
+            border-left: 4px solid #FB8C00;
+            border-radius: 4px;
+        }
+        pre {
+            background: #263238;
+            color: #AABBCC;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .code {
+            background: #263238;
+            color: #AABBCC;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Forza Monitor - Console de Test</h1>
+
+        <p>Cet outil permet de tester le système de monitoring non-invasif du site Forza Construction.</p>
+
+        <div class="warning">
+            <strong>⚠️ Important:</strong>
+            <ul>
+                <li>Ce test doit être exécuté depuis le site Wix en preview ou publié</li>
+                <li>Ouvrez la console développeur (F12) pour voir les résultats détaillés</li>
+                <li>Le monitoring peut prendre 30-60 secondes selon le nombre de pages</li>
+            </ul>
+        </div>
+
+        <button id="runBtn" onclick="runTest()">🚀 Lancer le monitoring</button>
+
+        <div id="status" class="status" style="display: none;"></div>
+
+        <div class="info">
+            <h3>📖 Instructions</h3>
+            <ol>
+                <li>Ouvrez la console développeur (F12)</li>
+                <li>Cliquez sur "Lancer le monitoring"</li>
+                <li>Attendez la fin de l'analyse (30-60s)</li>
+                <li>Consultez le tableau des résultats dans la console</li>
+                <li>Le rapport JSON complet est sauvegardé dans <span class="code">localStorage["forzaMonitoringReport"]</span></li>
+            </ol>
+        </div>
+
+        <div class="info">
+            <h3>🎯 Vérifications effectuées</h3>
+            <ul>
+                <li><strong>SEO:</strong> Title, meta description, JSON-LD, Open Graph, H1, images alt</li>
+                <li><strong>Navigation:</strong> Header sticky, CTAs, menu mobile</li>
+                <li><strong>Accessibilité:</strong> Touch targets ≥44px, ARIA labels, lang attribute</li>
+                <li><strong>Performance:</strong> Lazy loading, WebP/AVIF, resource hints</li>
+                <li><strong>Analytics:</strong> GA4 (gtag, dataLayer)</li>
+                <li><strong>Chatbot:</strong> Initialisation, intents</li>
+                <li><strong>Formulaires:</strong> Dry-run validation, labels, handlers</li>
+                <li><strong>Web Vitals:</strong> Proxies LCP, CLS, INP</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>💻 Usage en console</h3>
+            <p>Vous pouvez aussi lancer le monitoring directement depuis la console :</p>
+            <pre>// Import du module
+import { runForzaMonitor } from './forzaMonitor.js';
+
+// Lancer avec pages par défaut
+const report = await runForzaMonitor();
+
+// Lancer avec pages personnalisées
+const report = await runForzaMonitor([
+  '/',
+  '/services',
+  '/contact'
+]);
+
+// Consulter le rapport
+console.log(report);
+
+// Récupérer depuis localStorage
+const saved = JSON.parse(localStorage.getItem('forzaMonitoringReport'));</pre>
+        </div>
+    </div>
+
+    <script type="module">
+        import { runForzaMonitor } from './forzaMonitor.js';
+
+        window.runTest = async function() {
+            const btn = document.getElementById('runBtn');
+            const status = document.getElementById('status');
+
+            btn.disabled = true;
+            btn.textContent = '⏳ Monitoring en cours...';
+            status.style.display = 'block';
+            status.textContent = '🔍 Analyse des pages en cours...\nConsultez la console pour plus de détails.';
+
+            try {
+                console.clear();
+                console.log('%c🔍 FORZA MONITOR - DÉMARRAGE', 'font-size: 20px; font-weight: bold; color: #FF6B35;');
+                console.log('%cOuvrez les DevTools pour voir les résultats détaillés', 'font-size: 14px; color: #666;');
+
+                const report = await runForzaMonitor();
+
+                status.innerHTML = `
+                    ✅ <strong>Monitoring terminé !</strong><br>
+                    🎯 Score global: ${report.globalScore}/100<br>
+                    📊 ${report.results.length} pages analysées<br>
+                    💾 Rapport sauvegardé dans localStorage<br>
+                    <br>
+                    👉 Consultez la console pour le rapport détaillé
+                `;
+
+                btn.textContent = '🔄 Relancer le monitoring';
+                btn.disabled = false;
+
+            } catch (error) {
+                console.error('❌ Erreur monitoring:', error);
+                status.innerHTML = `
+                    ❌ <strong>Erreur:</strong> ${error.message}<br>
+                    <br>
+                    Consultez la console pour plus de détails.
+                `;
+                btn.textContent = '🔄 Réessayer';
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>

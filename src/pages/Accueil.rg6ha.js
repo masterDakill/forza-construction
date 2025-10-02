@@ -1,18 +1,48 @@
-// Page d'accueil optimisée - Forza Construction Inc.
-// Page d'accueil épurée avec redirection vers pages spécialisées
+// Page d'accueil ULTRA-OPTIMISÉE - Forza Construction Inc.
+// Design moderne, conversion maximale, esthétique professionnelle
 
 import wixLocation from 'wix-location';
 import wixWindow from 'wix-window';
 import wixData from 'wix-data';
 import { initMobileOptimizations } from './mobileOptimizations';
 import { initMobileSections } from './mobileSections';
+import { premiumMarketingCopy, conversionContent } from '../content/premiumMarketingCopy';
+import { modernDesignSystem, designComponents, cssUtilities } from '../styles/modernDesignSystem';
+import { leadManagement, analyticsManager, chatSystem, bookingSystem } from '../utils/professionalTools';
+import FORZA_DESIGN_GUIDE, { generateGlobalCSS } from '../styles/designGuide';
+import { initForzaSite } from '../utils/siteOrchestrator';
 
 $w.onReady(function () {
-    // === INITIALISATION SIMPLE ET EFFICACE ===
+    // === INITIALISATION PREMIUM ===
+    console.log('🚀 Forza Construction - Homepage Premium Loading...');
+
+    // 0. Initialiser orchestrateur (SEO, Analytics, Navigation, Performance)
+    initForzaSite('home', {
+        enableSEO: true,
+        enableAnalytics: true,
+        enableNavigation: true,
+        enablePerformance: true,
+        debug: false
+    });
+
+    // 1. Initialiser systèmes professionnels
+    initializeProfessionalSystems();
+
+    // 2. Appliquer design moderne
+    applyModernDesign();
+
+    // 3. Configurer page d'accueil optimisée
     initializeHomepage();
+
+    // 4. Setup navigation et interactions
     setupNavigationButtons();
-    setupAnimations();
+    setupAdvancedAnimations();
+
+    // 5. Optimisations mobiles
     setupMobileOptimizations();
+
+    // 6. Systèmes de conversion
+    initializeConversionSystems();
     
     // === CONFIGURATION PAGE D'ACCUEIL ===
     function initializeHomepage() {
@@ -33,9 +63,148 @@ $w.onReady(function () {
         console.log('✅ Homepage optimized and loaded');
     }
     
-    function setupHeroSection() {
-        // Titre principal
+    // === NOUVELLES FONCTIONS PREMIUM ===
+
+    function initializeProfessionalSystems() {
+        // 1. Initialiser analytics avancés
+        analyticsManager.trackUserEngagement();
+        analyticsManager.trackPagePerformance();
+
+        // 2. Système de chat professionnel
+        chatSystem.initializeChatWidget();
+
+        // 3. SEO dynamique
+        window.forzaProfessionalTools?.seoOptimization.optimizePageSEO({
+            title: "Forza Construction - Expert en Rénovation Résidentielle au Québec",
+            description: "Spécialiste en rénovation de cuisine, salle de bain et sous-sol. Devis gratuit, garantie 10 ans. Plus de 2,000 projets réalisés.",
+            keywords: "rénovation Québec, cuisine sur mesure, salle de bain, entrepreneur certifié, devis gratuit"
+        });
+
+        console.log('✅ Systèmes professionnels initialisés');
+    }
+
+    function applyModernDesign() {
+        // Injecter le système de design CSS COMPLET
+        const style = document.createElement('style');
+        style.id = 'forza-ultra-design';
+        style.textContent = generateGlobalCSS();
+        document.head.appendChild(style);
+
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Hero Section - Design Premium
+        if ($w('#heroSection')) {
+            $w('#heroSection').style.background = FORZA_DESIGN_GUIDE.colors.secondary.gradient;
+            $w('#heroSection').style.padding = isMobile ?
+                `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`;
+            $w('#heroSection').style.position = 'relative';
+            $w('#heroSection').style.overflow = 'hidden';
+        }
+
+        // Titre Hero - Taille optimale
         if ($w('#textHeroTitle')) {
+            $w('#textHeroTitle').style.fontSize = isMobile ?
+                FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1;
+            $w('#textHeroTitle').style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.bold;
+            $w('#textHeroTitle').style.lineHeight = FORZA_DESIGN_GUIDE.typography.lineHeight.tight;
+            $w('#textHeroTitle').style.color = FORZA_DESIGN_GUIDE.colors.neutral.white;
+            $w('#textHeroTitle').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.lg;
+        }
+
+        // Sous-titre Hero
+        if ($w('#textHeroSubtitle')) {
+            $w('#textHeroSubtitle').style.fontSize = isMobile ?
+                FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h4 :
+                FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h4;
+            $w('#textHeroSubtitle').style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.medium;
+            $w('#textHeroSubtitle').style.color = FORZA_DESIGN_GUIDE.colors.neutral.gray[200];
+            $w('#textHeroSubtitle').style.lineHeight = FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed;
+            $w('#textHeroSubtitle').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.xl;
+        }
+
+        // Améliorer TOUS les boutons avec le nouveau design
+        applyModernButtonStyles();
+
+        // Appliquer le design aux sections
+        applyModernSectionStyles();
+
+        console.log('✅ Design ultra-moderne appliqué avec succès');
+    }
+
+    function applyModernSectionStyles() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+        const sections = ['#servicesSection', '#testimonialsSection', '#statsSection', '#ctaSection'];
+
+        sections.forEach(sectionId => {
+            if ($w(sectionId)) {
+                $w(sectionId).style.padding = isMobile ?
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`;
+            }
+        });
+    }
+
+    function applyModernButtonStyles() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Boutons CTA principaux - Style Premium
+        const primaryButtons = $w('Button').filter(btn =>
+            btn.label && (btn.label.includes('DEVIS') || btn.label.includes('CONTACT') || btn.label.includes('GRATUIT'))
+        );
+
+        primaryButtons.forEach(button => {
+            button.style.background = FORZA_DESIGN_GUIDE.colors.primary.gradient;
+            button.style.color = FORZA_DESIGN_GUIDE.colors.neutral.white;
+            button.style.borderRadius = FORZA_DESIGN_GUIDE.effects.borderRadius.lg;
+            button.style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.semibold;
+            button.style.fontSize = isMobile ?
+                FORZA_DESIGN_GUIDE.typography.fontSize.mobile.body :
+                FORZA_DESIGN_GUIDE.typography.fontSize.desktop.body;
+            button.style.padding = isMobile ?
+                FORZA_DESIGN_GUIDE.components.button.sizes.medium.padding :
+                FORZA_DESIGN_GUIDE.components.button.sizes.large.padding;
+            button.style.boxShadow = FORZA_DESIGN_GUIDE.effects.boxShadow.primary;
+            button.style.transition = `all ${FORZA_DESIGN_GUIDE.animations.duration.normal} ${FORZA_DESIGN_GUIDE.animations.easing.easeOut}`;
+            button.style.border = 'none';
+            button.style.cursor = 'pointer';
+
+            // Largeur pleine sur mobile
+            if (isMobile) {
+                button.style.width = '100%';
+            }
+        });
+
+        // Boutons secondaires - Style Outline
+        const secondaryButtons = $w('Button').filter(btn =>
+            btn.label && (btn.label.includes('VOIR') || btn.label.includes('PROPOS') || btn.label.includes('PORTFOLIO'))
+        );
+
+        secondaryButtons.forEach(button => {
+            button.style.background = FORZA_DESIGN_GUIDE.colors.neutral.white;
+            button.style.color = FORZA_DESIGN_GUIDE.colors.primary.main;
+            button.style.border = `2px solid ${FORZA_DESIGN_GUIDE.colors.primary.main}`;
+            button.style.borderRadius = FORZA_DESIGN_GUIDE.effects.borderRadius.lg;
+            button.style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.semibold;
+            button.style.padding = isMobile ?
+                FORZA_DESIGN_GUIDE.components.button.sizes.medium.padding :
+                FORZA_DESIGN_GUIDE.components.button.sizes.large.padding;
+            button.style.transition = `all ${FORZA_DESIGN_GUIDE.animations.duration.normal}`;
+
+            if (isMobile) {
+                button.style.width = '100%';
+                button.style.marginTop = FORZA_DESIGN_GUIDE.spacing.sm;
+            }
+        });
+    }
+
+    function setupHeroSection() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Titre Hero - Texte optimisé et percutant
+        if ($w('#textHeroTitle')) {
+ codex/valider-site-web-construction-forza-sur-wix-2025-10-02
             $w('#textHeroTitle').text = "Building with Strength and Precision";
         }
 
@@ -47,15 +216,63 @@ $w.onReady(function () {
         // Description
         if ($w('#textHeroDescription')) {
             $w('#textHeroDescription').text = "Forza Construction Inc. — Entrepreneur général à Québec. Turn-key renovations, structural builds, and premium finishes tailored to your home.";
+=======
+            $w('#textHeroTitle').text = isMobile ?
+                "Rénovation Expert Québec" :
+                "Transformez Votre Maison en Chef-d'Œuvre";
+            $w('#textHeroTitle').style.textAlign = 'center';
         }
-        
-        // Boutons d'action
+
+        // Sous-titre - Proposition de valeur claire
+        if ($w('#textHeroSubtitle')) {
+            $w('#textHeroSubtitle').text = isMobile ?
+                "15 ans d'excellence • 2000+ projets réalisés" :
+                "Experts en rénovation résidentielle depuis 15 ans • Plus de 2,000 projets réalisés avec succès";
+            $w('#textHeroSubtitle').style.textAlign = 'center';
+        }
+
+        // Description - Bénéfices clairs
+        if ($w('#textHeroDescription')) {
+            $w('#textHeroDescription').text = isMobile ?
+                "Cuisine, salle de bain, agrandissement • Devis gratuit en 24h • Garantie 10 ans" :
+                "Cuisine sur mesure, salle de bain spa, agrandissement, sous-sol • Devis personnalisé gratuit en moins de 24h • Garantie complète 10 ans";
+            $w('#textHeroDescription').style.textAlign = 'center';
+            $w('#textHeroDescription').style.fontSize = isMobile ?
+                FORZA_DESIGN_GUIDE.typography.fontSize.mobile.body :
+                FORZA_DESIGN_GUIDE.typography.fontSize.desktop.lg;
+            $w('#textHeroDescription').style.color = FORZA_DESIGN_GUIDE.colors.neutral.gray[300];
+            $w('#textHeroDescription').style.lineHeight = FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed;
+            $w('#textHeroDescription').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.xl;
+main
+        }
+
+        // Indicateurs de confiance
+        setupTrustIndicators();
+
+        // Boutons d'action - Labels optimisés
         if ($w('#btnDevisGratuit')) {
-            $w('#btnDevisGratuit').label = "DEVIS GRATUIT 24H";
+            $w('#btnDevisGratuit').label = isMobile ?
+                "DEVIS GRATUIT 24H" :
+                "OBTENIR MON DEVIS GRATUIT →";
         }
-        
+
         if ($w('#btnVoirRealisations')) {
-            $w('#btnVoirRealisations').label = "Voir Nos Réalisations";
+            $w('#btnVoirRealisations').label = isMobile ?
+                "Portfolio" :
+                "Voir Nos Réalisations";
+        }
+
+        // Badge d'urgence
+        if ($w('#textUrgencyBadge')) {
+            $w('#textUrgencyBadge').text = "🔥 Disponible maintenant • Réponse en 24h";
+            $w('#textUrgencyBadge').style.background = 'rgba(255, 107, 53, 0.1)';
+            $w('#textUrgencyBadge').style.padding = FORZA_DESIGN_GUIDE.spacing.sm + ' ' + FORZA_DESIGN_GUIDE.spacing.md;
+            $w('#textUrgencyBadge').style.borderRadius = FORZA_DESIGN_GUIDE.effects.borderRadius.full;
+            $w('#textUrgencyBadge').style.color = FORZA_DESIGN_GUIDE.colors.primary.main;
+            $w('#textUrgencyBadge').style.fontSize = FORZA_DESIGN_GUIDE.typography.fontSize.desktop.small;
+            $w('#textUrgencyBadge').style.fontWeight = FORZA_DESIGN_GUIDE.typography.fontWeight.semibold;
+            $w('#textUrgencyBadge').style.display = 'inline-block';
+            $w('#textUrgencyBadge').style.marginBottom = FORZA_DESIGN_GUIDE.spacing.lg;
         }
     }
     

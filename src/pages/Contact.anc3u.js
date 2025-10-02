@@ -1,22 +1,177 @@
 // Page Contact - Forza Construction Inc.
-// Formulaire intelligent avec validation et automatisation + optimisations mobile
+// Formulaire intelligent avec validation et automatisation + optimisations mobile - VERSION OPTIMISÉE
 
 import wixLocation from 'wix-location';
 import wixData from 'wix-data';
 import wixStorage from 'wix-storage';
+ codex/valider-site-web-construction-forza-sur-wix-2025-10-02
 import { getStoredChatContext } from '../utils/chatbot.js';
 import { initMobileOptimizations } from './mobileOptimizations';
+=======
+import wixWindow from 'wix-window';
+// import { initMobileOptimizations } from './mobileOptimizations'; // Temporairement désactivé
+import FORZA_DESIGN_GUIDE, { generateGlobalCSS } from '../styles/designGuide';
+import { initForzaSite } from '../utils/siteOrchestrator';
+ main
 
 $w.onReady(function () {
-    // === INITIALISATION ===
+    console.log('🚀 Contact Page - Optimisation Premium Loading...');
+
+    // === ORCHESTRATEUR ===
+    initForzaSite('contact', { enableSEO: true, enableAnalytics: true, enableNavigation: true, enablePerformance: true });
+
+    // === INITIALISATION PREMIUM ===
+    applyModernDesign();
     setupContactForm();
     displayContactInfo();
     setupMap();
     setupBusinessHours();
-    
+    applyFormStyles();
+
     // === OPTIMISATIONS MOBILE ===
-    initMobileOptimizations();
+    // initMobileOptimizations(); // Temporairement désactivé
     setupMobileContactFeatures();
+
+    console.log('✅ Contact page optimisée et chargée');
+
+    // === DESIGN MODERNE ===
+    function applyModernDesign() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Injecter CSS global
+        const style = document.createElement('style');
+        style.id = 'forza-contact-design';
+        style.textContent = generateGlobalCSS();
+        document.head.appendChild(style);
+
+        // Hero Section - Contact
+        if ($w('#heroContact')) {
+            $w('#heroContact').style = {
+                background: FORZA_DESIGN_GUIDE.colors.secondary.gradient,
+                padding: isMobile ?
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`,
+                textAlign: 'center'
+            };
+        }
+
+        // Titre principal
+        if ($w('#titleContactPage')) {
+            $w('#titleContactPage').text = isMobile ?
+                "Contactez-Nous" :
+                "Parlons de Votre Projet de Construction";
+            $w('#titleContactPage').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h1 :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h1,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.bold,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                lineHeight: FORZA_DESIGN_GUIDE.typography.lineHeight.tight,
+                marginBottom: FORZA_DESIGN_GUIDE.spacing.lg
+            };
+        }
+
+        // Sous-titre
+        if ($w('#subtitleContactPage')) {
+            $w('#subtitleContactPage').text = isMobile ?
+                "Réponse garantie en 24h" :
+                "Notre équipe d'experts est prête à répondre à toutes vos questions • Réponse garantie en moins de 24 heures";
+            $w('#subtitleContactPage').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.body :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h5,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.gray[300],
+                lineHeight: FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed
+            };
+        }
+    }
+
+    function applyFormStyles() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+
+        // Container du formulaire
+        if ($w('#formContact')) {
+            $w('#formContact').style = {
+                background: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                padding: isMobile ? FORZA_DESIGN_GUIDE.spacing.xl : FORZA_DESIGN_GUIDE.spacing['2xl'],
+                borderRadius: FORZA_DESIGN_GUIDE.effects.borderRadius.xl,
+                boxShadow: FORZA_DESIGN_GUIDE.effects.boxShadow.xl
+            };
+        }
+
+        // Titre du formulaire
+        if ($w('#titleForm')) {
+            $w('#titleForm').text = "Décrivez-nous votre projet";
+            $w('#titleForm').style = {
+                fontSize: isMobile ?
+                    FORZA_DESIGN_GUIDE.typography.fontSize.mobile.h3 :
+                    FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h3,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.bold,
+                color: FORZA_DESIGN_GUIDE.colors.secondary.main,
+                marginBottom: FORZA_DESIGN_GUIDE.spacing.xl
+            };
+        }
+
+        // Style des inputs
+        const inputFields = [
+            '#inputNom', '#inputEmail', '#inputPhone',
+            '#inputEntreprise', '#inputMessage'
+        ];
+
+        inputFields.forEach(fieldId => {
+            if ($w(fieldId)) {
+                $w(fieldId).style = {
+                    padding: FORZA_DESIGN_GUIDE.components.input.padding,
+                    fontSize: FORZA_DESIGN_GUIDE.components.input.fontSize,
+                    background: FORZA_DESIGN_GUIDE.components.input.background,
+                    border: FORZA_DESIGN_GUIDE.components.input.border,
+                    borderRadius: FORZA_DESIGN_GUIDE.components.input.borderRadius,
+                    transition: FORZA_DESIGN_GUIDE.components.input.transition
+                };
+            }
+        });
+
+        // Dropdown
+        if ($w('#dropdownSujet')) {
+            $w('#dropdownSujet').style = {
+                padding: FORZA_DESIGN_GUIDE.components.input.padding,
+                fontSize: FORZA_DESIGN_GUIDE.components.input.fontSize,
+                border: FORZA_DESIGN_GUIDE.components.input.border,
+                borderRadius: FORZA_DESIGN_GUIDE.components.input.borderRadius
+            };
+        }
+
+        // Bouton submit avec style premium
+        if ($w('#btnSubmitContact')) {
+            $w('#btnSubmitContact').label = isMobile ?
+                "ENVOYER MA DEMANDE" :
+                "ENVOYER MA DEMANDE ET OBTENIR UNE RÉPONSE RAPIDE →";
+            $w('#btnSubmitContact').style = {
+                background: FORZA_DESIGN_GUIDE.colors.primary.gradient,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                padding: FORZA_DESIGN_GUIDE.components.button.sizes.large.padding,
+                borderRadius: FORZA_DESIGN_GUIDE.effects.borderRadius.lg,
+                boxShadow: FORZA_DESIGN_GUIDE.effects.boxShadow.primary,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.bold,
+                fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.body,
+                border: 'none',
+                cursor: 'pointer',
+                width: '100%',
+                marginTop: FORZA_DESIGN_GUIDE.spacing.xl
+            };
+        }
+
+        // Section info de contact
+        if ($w('#contactInfoSection')) {
+            $w('#contactInfoSection').style = {
+                background: FORZA_DESIGN_GUIDE.colors.neutral.gray[50],
+                padding: isMobile ?
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.mobile} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.mobile}` :
+                    `${FORZA_DESIGN_GUIDE.spacing.section.paddingY.desktop} ${FORZA_DESIGN_GUIDE.spacing.section.paddingX.desktop}`,
+                borderRadius: FORZA_DESIGN_GUIDE.effects.borderRadius.xl
+            };
+        }
+    }
     
     // === FORMULAIRE DE CONTACT AVANCÉ ===
     function setupContactForm() {
@@ -203,21 +358,80 @@ $w.onReady(function () {
     
     // === INFORMATIONS DE CONTACT ===
     function displayContactInfo() {
+        const isMobile = wixWindow.viewMode === 'mobile';
+
         const contactInfo = {
             phone: '(418) 123-4567',
             email: 'constructionforzainc@gmail.com',
             address: '123 Boulevard Construction, Québec, QC G1V 0A1',
-            urgence: '1-800-FORZA-24'
+            urgence: '1-800-FORZA-24',
+            hours: 'Lun-Ven: 7h-18h | Sam: 8h-16h'
         };
-        
-        // Affichage
-        $w('#textPhone').text = contactInfo.phone;
-        $w('#textEmail').text = contactInfo.email;
-        $w('#textAddress').text = contactInfo.address;
-        
-        // Liens cliquables
-        $w('#btnCallNow').onClick(() => {
-            wixLocation.to(`tel:${contactInfo.phone.replace(/\D/g, '')}`);
+
+        // Affichage avec style
+        if ($w('#textPhone')) {
+            $w('#textPhone').text = `📞 ${contactInfo.phone}`;
+            $w('#textPhone').style = {
+                fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h4,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.bold,
+                color: FORZA_DESIGN_GUIDE.colors.primary.main
+            };
+        }
+
+        if ($w('#textEmail')) {
+            $w('#textEmail').text = `✉️ ${contactInfo.email}`;
+            $w('#textEmail').style = {
+                fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.body,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.gray[700]
+            };
+        }
+
+        if ($w('#textAddress')) {
+            $w('#textAddress').text = `📍 ${contactInfo.address}`;
+            $w('#textAddress').style = {
+                fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.body,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.gray[700],
+                lineHeight: FORZA_DESIGN_GUIDE.typography.lineHeight.relaxed
+            };
+        }
+
+        if ($w('#textHours')) {
+            $w('#textHours').text = `🕐 ${contactInfo.hours}`;
+            $w('#textHours').style = {
+                fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.body,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.gray[700]
+            };
+        }
+
+        if ($w('#textUrgence')) {
+            $w('#textUrgence').text = `🚨 Urgence 24/7: ${contactInfo.urgence}`;
+            $w('#textUrgence').style = {
+                fontSize: FORZA_DESIGN_GUIDE.typography.fontSize.desktop.h5,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.bold,
+                color: FORZA_DESIGN_GUIDE.colors.status.error,
+                background: FORZA_DESIGN_GUIDE.colors.neutral.gray[100],
+                padding: FORZA_DESIGN_GUIDE.spacing.md,
+                borderRadius: FORZA_DESIGN_GUIDE.effects.borderRadius.md,
+                marginTop: FORZA_DESIGN_GUIDE.spacing.lg
+            };
+        }
+
+        // Liens cliquables avec style
+        if ($w('#btnCallNow')) {
+            $w('#btnCallNow').label = isMobile ? "APPELER" : "APPELER MAINTENANT";
+            $w('#btnCallNow').style = {
+                background: FORZA_DESIGN_GUIDE.colors.primary.gradient,
+                color: FORZA_DESIGN_GUIDE.colors.neutral.white,
+                padding: FORZA_DESIGN_GUIDE.components.button.sizes.medium.padding,
+                borderRadius: FORZA_DESIGN_GUIDE.effects.borderRadius.lg,
+                boxShadow: FORZA_DESIGN_GUIDE.effects.boxShadow.primary,
+                fontWeight: FORZA_DESIGN_GUIDE.typography.fontWeight.semibold,
+                border: 'none',
+                cursor: 'pointer',
+                width: isMobile ? '100%' : 'auto'
+            };
+            $w('#btnCallNow').onClick(() => {
+                wixLocation.to(`tel:${contactInfo.phone.replace(/\D/g, '')}`);
             trackAction('phone_click');
         });
         
